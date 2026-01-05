@@ -49,19 +49,19 @@ async function loadRecentPosts() {
   
   try {
     const response = await fetch('/assets/data/posts.json');
-    const data = await response.json();
-    const recentPosts = data.posts.slice(0, 3);
+    const posts = await response.json();
+    const recentPosts = posts.slice(0, 3);
     
     container.innerHTML = recentPosts.map(post => `
       <div style="margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--color-border);">
         <h5 style="margin-bottom: 0.25rem;">
-          <a href="/${post.slug}/">${post.title}</a>
+          <a href="/posts/${post.slug}/">${post.title}</a>
         </h5>
         <p style="font-size: 0.85rem; color: var(--color-text-muted); margin: 0;">
           ${post.excerpt}
         </p>
         <span style="font-size: 0.8rem; color: var(--color-text-muted);">
-          ${formatDate(post.date)}
+          ${post.date}
         </span>
       </div>
     `).join('');
@@ -78,20 +78,20 @@ async function loadBlogPosts() {
   
   try {
     const response = await fetch('/assets/data/posts.json');
-    const data = await response.json();
+    const posts = await response.json();
     
-    container.innerHTML = data.posts.map(post => `
+    container.innerHTML = posts.map(post => `
       <article class="post-card">
         <div class="post-card__content">
           <h3 class="post-card__title">
-            <a href="/${post.slug}/">${post.title}</a>
+            <a href="/posts/${post.slug}/">${post.title}</a>
           </h3>
           <p class="post-card__excerpt">${post.excerpt}</p>
           <div class="post-card__meta">
             <span>${post.author}</span>
-            <span>${formatDate(post.date)}</span>
+            <span>${post.date}</span>
           </div>
-          <a href="/${post.slug}/" class="post-card__read-more">Read More →</a>
+          <a href="/posts/${post.slug}/" class="post-card__read-more">Read More →</a>
         </div>
       </article>
     `).join('');
@@ -101,11 +101,6 @@ async function loadBlogPosts() {
   }
 }
 
-// Format date helper
-function formatDate(dateString) {
-  const options = { year: 'numeric', month: 'long', day: 'numeric' };
-  return new Date(dateString).toLocaleDateString('en-US', options);
-}
 
 // Code block copy functionality
 document.addEventListener('DOMContentLoaded', () => {
