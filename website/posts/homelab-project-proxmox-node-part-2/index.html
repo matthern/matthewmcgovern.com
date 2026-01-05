@@ -96,6 +96,18 @@ deb http://download.proxmox.com/debian bullseye pve-no-subscription</code></pre>
       <p>In the proxmox webUI in the datacentre options there is a section to define which 'Linux Bridge' network can be used for migrations. I added all local storage as thin provisioned LVM, this way I could run snapshots, and its a filesystem type I did not get a chance to use much on the first node. My NAS would act as shared storage, which I added on the new node as an NFS share using the proxmox GUI.</p>
 
       <h2>Migration Testing</h2>
+
+      <!-- Migration -->
+      <figure>
+        <img src="/assets/images/uploads/2023/08/migrate_shared.png" alt="VM migration with shared storage">
+        <figcaption>VM migration with shared storage</figcaption>
+      </figure>
+
+      <figure>
+        <img src="/assets/images/uploads/2023/08/migrate_shared_2.png" alt="Migration speeds">
+        <figcaption>Migration speeds</figcaption>
+      </figure>
+
       <p>My migration tests for VMs from one node to another went well. It is instant with the shared storage and takes a few minutes for small VMs when changing storage, although this was without any downtime to the VMs. The speeds were using the migration network and is looking very fast.</p>
 
       <p>One thing to note is that this kind of setup is not High Availability. This requires 3 nodes, as 2 votes are needed for Quorum for the cluster to decide which node to fall back on when migrating VMs. This could be something to think about for the next hardware project.</p>
