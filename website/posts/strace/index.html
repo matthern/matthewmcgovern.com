@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strace - Matthew McGovern</title>
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a href="/" class="logo">Matthew McGovern</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#interests">Interests</a></li>
+                <li><a href="/blog/">Posts</a></li>
+                <li><a href="/resume/">Resume</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="post-content">
+        <article>
+            <header class="post-header">
+                <h1>Strace</h1>
+                <div class="post-meta">
+                    <span class="post-date">July 22, 2023</span>
+                    <span class="post-author">Matthew McGovern</span>
+                </div>
+            </header>
+
+            <div class="post-body">
+                <p><code>strace</code> is a powerful command-line tool used to trace and debug system calls and signals made by a running process. It allows you to observe and analyze the interactions between a process and the operating system, providing insights into its behavior and troubleshooting potential issues.</p>
+
+                <h2>Find the Process ID</h2>
+                <pre><code class="language-bash">ps -ef | grep scriptname</code></pre>
+                <p>This will display a list of processes that match the name of the script. Identify the correct process and note its PID.</p>
+
+                <h2>Attach strace to the Running Script</h2>
+                <p>Once you have the PID, you can attach <code>strace</code> to the running script using the <code>-p</code> option:</p>
+                <pre><code class="language-bash">strace -p &lt;pid&gt;</code></pre>
+                <p>This will start tracing system calls and signals made by the running script.</p>
+
+                <h2>Observe the strace Output</h2>
+                <p><code>strace</code> will start printing the system calls and signals made by the script in real-time. It provides detailed information, including the call type, arguments, return values, and any errors encountered. This output can help you understand the behavior of the script and identify any issues or unexpected behavior.</p>
+
+                <h2>Analyze the strace Output</h2>
+                <p>Analyze the output of <code>strace</code> to gain insights into the script's behavior. Look for any errors or unusual system calls that might indicate problems. Pay attention to specific system calls like <code>open</code>, <code>read</code>, <code>write</code>, <code>fork</code>, <code>exec</code>, and others, depending on the script's functionality. The output can help you diagnose issues, identify performance bottlenecks, or trace the flow of execution within the script.</p>
+
+                <h2>Detach strace</h2>
+                <p>To detach <code>strace</code> from the script, use the keyboard shortcut <code>Ctrl + C</code>. This will stop tracing the script's system calls and signals.</p>
+
+                <h2>Save Output to File</h2>
+                <pre><code class="language-bash">strace -p &lt;pid&gt; -o strace_output.txt</code></pre>
+            </div>
+
+            <nav class="post-navigation">
+                <a href="/posts/find-out-what-is-being-used-in-swap/" class="prev-post">← Previous: Find Out What Is Being Used In Swap</a>
+                <a href="/posts/homelab-project-proxmox-node-part-1/" class="next-post">Next: Homelab Project: Proxmox Node Part 1 →</a>
+            </nav>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Matthew McGovern. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux: Creating a New Filesystem Using Existing Location - Matthew McGovern</title>
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a href="/" class="logo">Matthew McGovern</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#interests">Interests</a></li>
+                <li><a href="/blog/">Posts</a></li>
+                <li><a href="/resume/">Resume</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="post-content">
+        <article>
+            <header class="post-header">
+                <h1>Linux: Creating a New Filesystem Using Existing Location</h1>
+                <div class="post-meta">
+                    <span class="post-date">July 1, 2023</span>
+                    <span class="post-author">Matthew McGovern</span>
+                </div>
+            </header>
+
+            <div class="post-body">
+                <p>This was playing with filesystems on rocky linux 9. I found one situation where a VM had a root file system mounted directly to a 30GB device, which was filling up and causing issues as it was the location of the app and could not be extended. There was more storage available that could be allocated to some of the locations on this disk such as the app directory.</p>
+
+                <p>A solution could be to mount this dir onto a new filesystem. In the below example I used /var. This assumes using super user. The idea being that we move the existing /var off the root filesystem and mount a new directory to its own filesystem.</p>
+
+                <h2>Check Volume Groups</h2>
+                <p>Firstly this is output of the 'vgs' command in this scenario. Volume group is named rl.</p>
+
+                <pre><code class="language-bash">vgs
+
+VG #PV #LV #SN Attr   VSize  VFree
+rl   2   5   0 wz--n- 62.99g &lt;30.00g</code></pre>
+
+                <h2>Create Logical Volume</h2>
+                <p>Create lv, give it 2G, assign the name 'var' and format:</p>
+
+                <pre><code class="language-bash">lvcreate -L 2G -n var rl
+
+mkfs.xfs /dev/rl/var
+
+# or for ext4:
+mkfs.ext4 /dev/rl/var</code></pre>
+
+                <h2>Boot into Rescue Mode</h2>
+                <p>Backup data and copy over after mounting. To do this we dont want anything touching the files, one way is to boot into rescue mode (this is rocky/redhat 9 equiv to runlevel 1):</p>
+
+                <p>Can only do this if you have access via console as no services or network will be running. Can then copy/move files without as much risk.</p>
+
+                <p><a href="https://www.liquidweb.com/kb/linux-runlevels-explained/" target="_blank">Linux Runlevels Explained</a></p>
+
+                <pre><code class="language-bash">systemctl isolate rescue.target
+
+# To get back and to check which init or mode you are in:
+systemctl isolate multi-user.target
+
+systemctl get-default</code></pre>
+
+                <h2>Mount and Migrate Data</h2>
+                <p>Mount to file system, backup and move files and add to fstab so mount persists a reboot, using ext4 or xfs depending on partition created. After this, reboot system.</p>
+
+                <pre><code class="language-bash">mkdir /newvar
+
+mount /dev/rl/var /newvar
+
+# backup old location:
+cp -apx /var/* /newvar
+
+mv /var /var.old
+
+mkdir /var
+
+# add to /etc/fstab:
+/dev/mapper/rl-var      /var                    ext4    defaults        0 0
+
+# can then reboot</code></pre>
+            </div>
+
+            <nav class="post-navigation">
+                <a href="/posts/docker-cheat-sheet/" class="prev-post">← Previous: Docker Cheat Sheet</a>
+                <a href="/posts/git-cheat-sheet/" class="next-post">Next: GIT Cheat Sheet →</a>
+            </nav>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Matthew McGovern. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>
+

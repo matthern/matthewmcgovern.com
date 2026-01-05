@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recreating Container After Updating - Matthew McGovern</title>
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a href="/" class="logo">Matthew McGovern</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#interests">Interests</a></li>
+                <li><a href="/blog/">Posts</a></li>
+                <li><a href="/resume/">Resume</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="post-content">
+        <article>
+            <header class="post-header">
+                <h1>Recreating Container After Updating</h1>
+                <div class="post-meta">
+                    <span class="post-date">July 20, 2023</span>
+                    <span class="post-author">Matthew McGovern</span>
+                </div>
+            </header>
+
+            <div class="post-body">
+                <p>Assuming you have updated your code and have the Dockerfile in place:</p>
+
+                <h2>Build a New Image</h2>
+                <p>Build a new image from the location your Dockerfile is in place, or give location of Dockerfile.</p>
+
+                <pre><code class="language-bash">docker build -t image-name .</code></pre>
+
+                <pre><code class="language-bash">docker build -t image-name -f /path/to/Dockerfile .</code></pre>
+
+                <p>This will create a new image with your updated code. Be sure to use the same <code>&lt;image-name&gt;</code> as the existing container that you want to replace.</p>
+
+                <h2>Stop and Remove Existing Container</h2>
+                <pre><code class="language-bash">docker stop container-name</code></pre>
+
+                <pre><code class="language-bash">docker rm container-name</code></pre>
+
+                <h2>Run a New Container</h2>
+                <p>Run a new container using image name or if using a docker-compose file:</p>
+
+                <pre><code class="language-bash">docker run --name container-name -d image-name</code></pre>
+
+                <pre><code class="language-bash">docker-compose -f filename.yml up -d</code></pre>
+
+                <p>This will start a new container using the new image with your updated code. Be sure to use the same <code>&lt;container-name&gt;</code> as the existing container that you just removed, and the same <code>&lt;image-name&gt;</code> as the image you built in the previous step.</p>
+
+                <p>After these steps, your new container will be up and running with your updated code. If your container is running a service that is exposed on a port, be sure to map the container's port to a port on your host machine using the <code>-p</code> option when you run the new container.</p>
+            </div>
+
+            <nav class="post-navigation">
+                <a href="/posts/free-h/" class="prev-post">← Previous: free -h</a>
+                <a href="/posts/docker-secrets/" class="next-post">Next: Docker Secrets →</a>
+            </nav>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Matthew McGovern. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>
+

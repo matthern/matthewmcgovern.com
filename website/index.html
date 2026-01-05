@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matthew McGovern - IT Professional</title>
+  <meta name="description" content="Matthew McGovern - IT Professional specializing in Linux system administration, virtualization, and containerization.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@400;500&family=Roboto+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/images/favicon.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/assets/images/favicon.png">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header__inner">
+        <div class="header__logo">
+          <a href="/">
+            <img src="/assets/images/logo.png" alt="Matthew McGovern">
+          </a>
+          <span class="header__title"><a href="/">MATTHEW MCGOVERN</a></span>
+        </div>
+        
+        <nav class="nav">
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+          
+          <ul class="nav__list">
+            <li><a href="/" class="nav__link nav__link--active">Home</a></li>
+            <li><a href="#about" class="nav__link">About</a></li>
+            <li><a href="#interests" class="nav__link">Interests</a></li>
+            <li><a href="/resume/" class="nav__link">Resume</a></li>
+            <li><a href="/blog/" class="nav__link">Posts</a></li>
+          </ul>
+          
+          <div class="social-links">
+            <a href="mailto:matt@matthewmcgovern.com" title="Email">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/matthewmcgovern-a844391a2" target="_blank" rel="noopener" title="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            </a>
+            <a href="https://github.com/matthern" target="_blank" rel="noopener" title="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+            </a>
+            <a href="https://hub.docker.com/u/matthewmjpm" target="_blank" rel="noopener" title="Docker Hub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.185-.186h-2.12a.186.186 0 0 0-.185.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288z"/></svg>
+            </a>
+            <a href="/assets/files/MatthewMcGovern-Resume-2024.pdf" target="_blank" title="Download Resume">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero__grid">
+        <!-- Greetings -->
+        <div class="hero__card">
+          <h4>Greetings</h4>
+          <p>My name is Matthew McGovern. An Information Technology professional. I have been working in the industry for 3 years with experience in Linux system administration, hardware and operational backup, restoration and replication systems.</p>
+          <p>Have a look around the page, or check out my <a href="https://github.com/matthern">GitHub</a> and <a href="https://hub.docker.com/u/matthewmjpm">Docker Hub</a>. More about me can also be found below and in my <a href="/blog/">blog</a>.</p>
+        </div>
+        
+        <!-- Education -->
+        <div class="hero__card">
+          <h4>Education</h4>
+          <p>I have an ACS-accredited higher education degree; Bachelor of Information Technology. This used <a href="https://www.comptia.org/">CompTIA+</a> resources and my major was Network Security.</p>
+          <p>Currently working through <a href="https://acloudguru.com/">A Cloud Guru</a> courses in Red Hat, Ansible, Python and Docker/Kubernetes.</p>
+          <p>I have studied Virtualization, containers and hypervisor management, automation and scripting, web development, physical and virtual server hosting and administration, and database administration.</p>
+        </div>
+        
+        <!-- Experience -->
+        <div class="hero__card">
+          <h4>Experience</h4>
+          <p>I have been working in the IT industry for a software company for the past 3 years. In my role as a cloud technical engineer, I have experience managing our hosted software stack; using our private cloud with VMware virtualization and Rancher-managed Docker containers.</p>
+          <p>Currently working on a project involving deployment of Kubernetes nodes and clusters.</p>
+          <p>I have some data center experience, installing hardware and initial configuration for our backup systems.</p>
+        </div>
+        
+        <!-- Recent Posts -->
+        <div class="hero__card">
+          <h4><a href="/blog/">Blog</a></h4>
+          <div id="recent-posts">
+            <!-- Posts will be loaded here by JavaScript -->
+          </div>
+          <a href="/blog/" class="btn btn--outline mt-md">View All Posts</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interests Section -->
+  <section id="interests" class="section section--alt">
+    <div class="container">
+      <h2 class="mb-lg">Interests</h2>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+        <div>
+          <p>I love to use Linux and explore the command line, finding simple solutions with enough visibility to gain an understanding of the complete process. My interests include Linux system administration, infrastructure automation and experimenting with Proxmox and virtualization and Docker containers, monitoring, and scripting on my homelab.</p>
+          <p>My homelab began as an old laptop with Ubuntu, where I learnt the Linux filesystem and CLI. Since then it has expanded to a HA clustered Proxmox host setup with shared storage running a number of Linux VMs.</p>
+          <p>Along with a managed switch and a consumer grade NAS, I host my own dockerised applications and websites as a way to learn more about Python, Go and Bash scripting.</p>
+          <p>So far with my lab I have played with backup systems and scripts, Rancher, Wireguard VPN, DNS servers, file servers, NFS shared storage, media servers and USB/Video device passthroughs, reverse proxy and SSL certificates with Grafana, Telegraf/InfluxDB and Prometheus monitoring using custom dashboards for my UPS and NAS.</p>
+          <p>Outside of IT, I love to eat well, play basketball and spend time with my family.</p>
+        </div>
+        <div class="interests__images">
+          <img src="/assets/images/proxmox-dashboard.png" alt="Proxmox Virtual Environment Dashboard">
+          <img src="/assets/images/docker-services.png" alt="Docker Services">
+          <img src="/assets/images/grafana-dashboard.png" alt="Grafana Monitoring Dashboard">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="section about">
+    <div class="container">
+      <div class="about__content">
+        <img src="/assets/images/profile.jpg" alt="Matthew McGovern" class="about__image">
+        <h2 class="about__title">Matthew McGovern</h2>
+        <p class="about__subtitle">IT Professional</p>
+        <p class="about__text">
+          In early 2019 I decided that I would change careers to pursue my dreams of working in the IT industry.
+        </p>
+        <p class="about__text">
+          I love solving problems and find satisfaction in completing difficult tasks. I often lose track of time when studying or working on personal projects. I have always had a passion for technology and computers, configuring networks and interest in how computers and software works has been a hobby of mine since I was young.
+        </p>
+        <p class="about__text">
+          Recently this has expanded to include virtualization, containerization and home labbing, automation and scripting.
+        </p>
+        <p class="about__text">
+          It was an obvious choice to follow the IT career path. While studying I have found that I am well suited for self-learning. I am currently working in the industry deep in Linux terminals all day and couldn't be happier with this kind of work.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <nav class="footer__nav">
+          <a href="/">Home</a>
+          <a href="#about">About</a>
+          <a href="#interests">Interests</a>
+          <a href="/resume/">Resume</a>
+          <a href="/blog/">Posts</a>
+        </nav>
+        <div class="social-links">
+          <a href="mailto:matt@matthewmcgovern.com" title="Email">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          </a>
+          <a href="https://www.linkedin.com/in/matthewmcgovern-a844391a2" target="_blank" rel="noopener" title="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+          </a>
+          <a href="https://github.com/matthern" target="_blank" rel="noopener" title="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+          </a>
+          <a href="https://hub.docker.com/u/matthewmjpm" target="_blank" rel="noopener" title="Docker Hub">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.185-.186h-2.12a.186.186 0 0 0-.185.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288z"/></svg>
+          </a>
+        </div>
+        <p class="footer__copyright">&copy; 2024 Matthew McGovern. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Secrets - Matthew McGovern</title>
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a href="/" class="logo">Matthew McGovern</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#interests">Interests</a></li>
+                <li><a href="/blog/">Posts</a></li>
+                <li><a href="/resume/">Resume</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="post-content">
+        <article>
+            <header class="post-header">
+                <h1>Docker Secrets</h1>
+                <div class="post-meta">
+                    <span class="post-date">July 22, 2023</span>
+                    <span class="post-author">Matthew McGovern</span>
+                </div>
+            </header>
+
+            <div class="post-body">
+                <p>Here are the steps to use Docker secrets for swarm manager:</p>
+
+                <h2>Create Secrets</h2>
+                <pre><code class="language-bash"># Create some secrets:
+echo "YOUR_BOT_API_KEY" | docker secret create bot_api_key -
+echo "YOUR_YT_API_KEY" | docker secret create yt_api_key -</code></pre>
+
+                <p>This will create two secrets named <code>bot_api_key</code> and <code>yt_api_key</code>, and will set their values to YOUR_BOT_API_KEY and YOUR_YT_API_KEY respectively.</p>
+
+                <h2>Start Container with Named Volumes</h2>
+                <p>When you start your container, you can pass the named volumes containing the secrets:</p>
+
+                <pre><code class="language-bash">docker run -v bot_api_key:/run/secrets/bot_api_key -v yt_api_key:/run/secrets/yt_api_key my-image</code></pre>
+
+                <p>This will create two named volumes named <code>bot_api_key</code> and <code>yt_api_key</code>, and will mount them as files in the container at <code>/run/secrets/bot_api_key</code> and <code>/run/secrets/yt_api_key</code> respectively.</p>
+
+                <h2>Docker Compose Example</h2>
+                <pre><code class="language-yaml">version: '3.7'
+
+services:
+  my-service:
+    image: my-image
+    secrets:
+      - bot_api_key
+      - yt_api_key
+    restart: always
+
+secrets:
+  bot_api_key:
+    external: true
+  yt_api_key:
+    external: true</code></pre>
+
+                <p>By using Docker secrets, you can avoid exposing your sensitive information like API keys in the Docker inspect output. This is better than having sensitive information in docker-compose or environment variables.</p>
+
+                <h2>Non-Swarm Example</h2>
+                <p>For non-swarm we can use the below example in a docker-compose file, using env variable:</p>
+
+                <pre><code class="language-yaml">version: '3.7'
+
+services:
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate run --token $CLOUDFLARED_TOKEN
+    environment:
+      - CLOUDFLARED_TOKEN_FILE=/run/secrets/cloudflared_token
+    restart: always</code></pre>
+
+                <p>When running compose you can define the secret:</p>
+                <pre><code class="language-bash">CLOUDFLARED_TOKEN=your_token docker-compose up -d</code></pre>
+            </div>
+
+            <nav class="post-navigation">
+                <a href="/posts/recreate-container-after-update/" class="prev-post">← Previous: Recreating Container After Updating</a>
+                <a href="/posts/find-out-what-is-being-used-in-swap/" class="next-post">Next: Find Out What Is Being Used In Swap →</a>
+            </nav>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Matthew McGovern. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>
+

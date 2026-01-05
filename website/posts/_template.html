@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- EDIT: Change the title -->
+  <title>POST TITLE - Matthew McGovern</title>
+  <!-- EDIT: Change the description -->
+  <meta name="description" content="POST DESCRIPTION">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@400;500&family=Roboto+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  
+  <!-- Syntax Highlighting (for code blocks) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/images/favicon.png" sizes="32x32">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header__inner">
+        <div class="header__logo">
+          <a href="/">
+            <img src="/assets/images/logo.png" alt="Matthew McGovern">
+          </a>
+          <span class="header__title"><a href="/">MATTHEW MCGOVERN</a></span>
+        </div>
+        
+        <nav class="nav">
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+          
+          <ul class="nav__list">
+            <li><a href="/" class="nav__link">Home</a></li>
+            <li><a href="/#about" class="nav__link">About</a></li>
+            <li><a href="/#interests" class="nav__link">Interests</a></li>
+            <li><a href="/resume/" class="nav__link">Resume</a></li>
+            <li><a href="/blog/" class="nav__link nav__link--active">Posts</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Header -->
+  <section class="post-header">
+    <div class="container container--narrow">
+      <!-- EDIT: Change the title -->
+      <h1 class="post-header__title">POST TITLE</h1>
+      <!-- EDIT: Change the excerpt -->
+      <p class="post-header__excerpt">POST EXCERPT/DESCRIPTION</p>
+      <!-- EDIT: Change the date -->
+      <p class="post-header__meta">
+        <span>Matthew McGovern</span> · <span>January 1, 2024</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Post Content -->
+  <article class="post-content">
+    <div class="container container--narrow">
+      
+      <!-- EDIT: Add your content here -->
+      
+      <p>Your introduction paragraph goes here.</p>
+      
+      <h2>Section Heading</h2>
+      <p>Your content goes here.</p>
+      
+      <!-- Code block example -->
+      <pre><code class="language-bash">your code here</code></pre>
+      
+      <!-- Image example -->
+      <figure>
+        <img src="/assets/images/uploads/YEAR/MONTH/image-name.png" alt="Description">
+        <figcaption>Image caption</figcaption>
+      </figure>
+      
+      <!-- END OF CONTENT -->
+      
+      <!-- Post Navigation -->
+      <!-- EDIT: Update the prev/next links, or remove if not needed -->
+      <nav class="post-nav">
+        <a href="/posts/previous-post-slug/" class="post-nav__link">
+          <span class="post-nav__label">← Previous</span>
+          <span class="post-nav__title">Previous Post Title</span>
+        </a>
+        <a href="/posts/next-post-slug/" class="post-nav__link post-nav__link--next">
+          <span class="post-nav__label">Next →</span>
+          <span class="post-nav__title">Next Post Title</span>
+        </a>
+      </nav>
+      
+    </div>
+  </article>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <nav class="footer__nav">
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/blog/">Posts</a>
+        </nav>
+        <p class="footer__copyright">&copy; 2024 Matthew McGovern. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
+
+<!--
+================================================================================
+HOW TO CREATE A NEW BLOG POST:
+================================================================================
+
+1. Copy this template to: /posts/your-post-slug/index.html
+   Example: /posts/my-new-linux-tip/index.html
+
+2. Edit the following in the new file:
+   - <title> tag
+   - <meta name="description"> tag
+   - <h1 class="post-header__title">
+   - <p class="post-header__excerpt">
+   - Date in post-header__meta
+   - All content in the <article> section
+   - Previous/Next navigation links
+
+3. Add the post to /assets/data/posts.json:
+   {
+     "id": "your-post-slug",
+     "title": "Your Post Title",
+     "excerpt": "Brief description of your post.",
+     "date": "2024-01-01",
+     "author": "Matthew McGovern",
+     "categories": ["linux", "bash"],
+     "slug": "your-post-slug"
+   }
+
+4. For images:
+   - Save images to: /assets/images/uploads/YEAR/MONTH/
+   - Reference them as: /assets/images/uploads/2024/01/image-name.png
+
+5. For code blocks, use:
+   <pre><code class="language-bash">your code</code></pre>
+   
+   Supported languages: bash, javascript, python, json, yaml, etc.
+
+================================================================================
+-->
+

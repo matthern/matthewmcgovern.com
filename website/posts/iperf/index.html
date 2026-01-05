@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iperf - Matthew McGovern</title>
+  <meta name="description" content="Simple setup for bandwidth testing using iperf.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@400;500&family=Roboto+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  
+  <!-- Syntax Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/images/favicon.png" sizes="32x32">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header__inner">
+        <div class="header__logo">
+          <a href="/">
+            <img src="/assets/images/logo.png" alt="Matthew McGovern">
+          </a>
+          <span class="header__title"><a href="/">MATTHEW MCGOVERN</a></span>
+        </div>
+        
+        <nav class="nav">
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+          
+          <ul class="nav__list">
+            <li><a href="/" class="nav__link">Home</a></li>
+            <li><a href="/#about" class="nav__link">About</a></li>
+            <li><a href="/#interests" class="nav__link">Interests</a></li>
+            <li><a href="/resume/" class="nav__link">Resume</a></li>
+            <li><a href="/blog/" class="nav__link nav__link--active">Posts</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Header -->
+  <section class="post-header">
+    <div class="container container--narrow">
+      <h1 class="post-header__title">Iperf</h1>
+      <p class="post-header__excerpt">Simple setup for bandwidth testing using iperf.</p>
+      <p class="post-header__meta">
+        <span>Matthew McGovern</span> · <span>October 15, 2023</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Post Content -->
+  <article class="post-content">
+    <div class="container container--narrow">
+      
+      <p>Iperf is a simple tool for testing networks. There are many options to check network bandwidth. I will outline how to check bandwidth on an interface.</p>
+      
+      <h2>Installation</h2>
+      <p>To install on Debian systems:</p>
+      
+      <pre><code class="language-bash">sudo apt update</code></pre>
+      
+      <pre><code class="language-bash">sudo apt install iperf</code></pre>
+      
+      <h2>Server Setup</h2>
+      <p>You install on client server and start the listener on port 5001 by default or define your own port to use. It will need to be allowed through firewalls.</p>
+      
+      <pre><code class="language-bash">iperf -s</code></pre>
+      
+      <p>Or with a custom port:</p>
+      
+      <pre><code class="language-bash">iperf -s -p 12345</code></pre>
+      
+      <h2>Binding to a Specific Interface</h2>
+      <p>You can bind the listener to the interface you want to test by defining the IP on server. In the below example I will bind to the 10.0.0.2 interface:</p>
+      
+      <pre><code class="language-bash">iperf -s -B 10.0.0.2</code></pre>
+      
+      <h2>Client Connection</h2>
+      <p>On the client side you make the connection to test, again defining the interface/IP and the test will run. Below is a test between Proxmox nodes on migration/2.5G network:</p>
+      
+      <pre><code class="language-bash">iperf -c 10.0.0.2 -B 10.0.0.1</code></pre>
+      
+      <figure>
+        <img src="/assets/images/uploads/2023/10/iperf-test-result.png" alt="Iperf test result showing bandwidth between Proxmox nodes">
+        <figcaption>Iperf bandwidth test result</figcaption>
+      </figure>
+      
+      <!-- Post Navigation -->
+      <nav class="post-nav">
+        <a href="/posts/nsx-edge-commands/" class="post-nav__link">
+          <span class="post-nav__label">← Previous</span>
+          <span class="post-nav__title">NSX Edge Commands</span>
+        </a>
+        <a href="/posts/how-to-create-nic-bonding-in-linux/" class="post-nav__link post-nav__link--next">
+          <span class="post-nav__label">Next →</span>
+          <span class="post-nav__title">How to create NIC Bonding in Linux</span>
+        </a>
+      </nav>
+      
+    </div>
+  </article>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <nav class="footer__nav">
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/blog/">Posts</a>
+        </nav>
+        <p class="footer__copyright">&copy; 2024 Matthew McGovern. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
+

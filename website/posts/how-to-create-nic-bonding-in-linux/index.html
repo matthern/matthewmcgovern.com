@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Create NIC Bonding in Linux - Matthew McGovern</title>
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a href="/" class="logo">Matthew McGovern</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#interests">Interests</a></li>
+                <li><a href="/blog/">Posts</a></li>
+                <li><a href="/resume/">Resume</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="post-content">
+        <article>
+            <header class="post-header">
+                <h1>How to Create NIC Bonding in Linux</h1>
+                <div class="post-meta">
+                    <span class="post-date">November 23, 2023</span>
+                    <span class="post-author">Matthew McGovern</span>
+                </div>
+            </header>
+
+            <div class="post-body">
+                <p>Network Interface Card (NIC) bonding in Linux offers several advantages, particularly in scenarios where high availability and improved network performance are crucial. One significant benefit is enhanced bandwidth and load balancing.</p>
+
+                <p>In my home lab I had some issues with multiple backups at the same time, as the NFS shares were reaching their limit. I combined multiple NICs into a bonded interface, so during network-heavy operations the traffic could be distributed across these interfaces, preventing bottlenecks and optimizing overall data throughput. I did this for multiple networks so the NAS can serve the proxmox hosts and separately run migrations/backups on a separate NFS share and network.</p>
+
+                <p>Moreover, NIC bonding provides fault tolerance; if one NIC fails, the bonded interface can seamlessly switch to the functioning NIC, ensuring continuous network connectivity.</p>
+
+                <p>This will not be able to create speeds higher than your network allows to one host but can reach maximum for each network device on multiple devices.</p>
+
+                <h2>Configure the Bond Interface</h2>
+                <p>To set it up on rocky/debian you can edit the below file to add the bonding options:</p>
+                <p><code>/etc/sysconfig/network-scripts/ifcfg-bond0</code></p>
+
+                <pre><code class="language-bash">DEVICE=bond0
+BOOTPROTO=static
+ONBOOT=yes
+IPADDR=192.168.0.182
+NETMASK=255.255.255.0
+BONDING_OPTS="mode=6 use_carrier=1 miimon=100 updelay=100"
+USERCTL=no</code></pre>
+
+                <h2>Configure Slave Interfaces</h2>
+                <p>In the networks you require to bond, set <code>slave</code> to yes and point the <code>master</code> to <code>bond0</code> as defined above.</p>
+
+                <p><code>/etc/sysconfig/network-scripts/ifcfg-eth0</code></p>
+                <pre><code class="language-bash">DEVICE=eth0
+BOOTPROTO=static
+ONBOOT=yes
+IPADDR=192.168.0.182
+NETMASK=255.255.255.0
+SLAVE=yes
+MASTER=bond0
+USERCTL=no</code></pre>
+
+                <p><code>/etc/sysconfig/network-scripts/ifcfg-eth1</code></p>
+                <pre><code class="language-bash">DEVICE=eth1
+BOOTPROTO=static
+ONBOOT=yes
+SLAVE=yes
+MASTER=bond0
+USERCTL=no</code></pre>
+
+                <h2>Verify the Bond</h2>
+                <p>Restart networking for your distro, and check status of the bond:</p>
+
+                <pre><code class="language-bash">cat /proc/net/bonding/bond0</code></pre>
+
+                <pre><code class="language-bash">ip a</code></pre>
+
+                <p>I also have bond1 setup for another network, this is the same setup but a different subnet.</p>
+            </div>
+
+            <nav class="post-navigation">
+                <a href="/posts/iperf/" class="prev-post">← Previous: Iperf</a>
+                <a href="/posts/setup-jump-host-with-vpn-client/" class="next-post">Next: Setup Jump Host with VPN Client →</a>
+            </nav>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Matthew McGovern. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>
+

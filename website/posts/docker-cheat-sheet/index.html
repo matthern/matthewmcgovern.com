@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Docker Cheat Sheet - Matthew McGovern</title>
+  <meta name="description" content="Some useful docker commands.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@400;500&family=Roboto+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  
+  <!-- Syntax Highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/images/favicon.png" sizes="32x32">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header__inner">
+        <div class="header__logo">
+          <a href="/">
+            <img src="/assets/images/logo.png" alt="Matthew McGovern">
+          </a>
+          <span class="header__title"><a href="/">MATTHEW MCGOVERN</a></span>
+        </div>
+        
+        <nav class="nav">
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+          
+          <ul class="nav__list">
+            <li><a href="/" class="nav__link">Home</a></li>
+            <li><a href="/#about" class="nav__link">About</a></li>
+            <li><a href="/#interests" class="nav__link">Interests</a></li>
+            <li><a href="/resume/" class="nav__link">Resume</a></li>
+            <li><a href="/blog/" class="nav__link nav__link--active">Posts</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Header -->
+  <section class="post-header">
+    <div class="container container--narrow">
+      <h1 class="post-header__title">Docker Cheat Sheet</h1>
+      <p class="post-header__excerpt">Some useful docker commands.</p>
+      <p class="post-header__meta">
+        <span>Matthew McGovern</span> · <span>May 9, 2023</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Post Content -->
+  <article class="post-content">
+    <div class="container container--narrow">
+      
+      <h2>Install Docker on Rocky/Red Hat 9</h2>
+      
+<pre><code class="language-bash"># Check for updates
+sudo dnf check-update
+
+# Add Docker repository
+sudo dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+# Install Docker
+sudo dnf install docker-ce docker-ce-cli containerd.io
+
+# Start and enable Docker
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Add user to docker group
+sudo usermod -aG docker $(whoami)
+sudo usermod -aG docker username</code></pre>
+
+      <h2>Building Docker Images</h2>
+      
+<pre><code class="language-bash"># Build image from Dockerfile in current directory
+docker build .
+
+# Login to Docker Hub
+docker login</code></pre>
+
+      <h2>Tag, Pull, and Push Images</h2>
+      
+<pre><code class="language-bash"># Tag an image
+docker tag reponame/imagename:tagname
+
+# Pull an image
+docker pull reponame/imagename:tagname
+
+# Push an image
+docker push reponame/imagename:tagname</code></pre>
+
+      <h2>Clean Up</h2>
+      
+<pre><code class="language-bash"># Remove dangling images
+docker prune
+
+# List dangling images
+docker images --filter "dangling=true"
+
+# Remove dangling and unused images
+docker prune -a
+
+# Remove image
+docker rmi &lt;imagename&gt;
+
+# Remove container
+docker rm &lt;container&gt;</code></pre>
+
+      <h2>Container Management</h2>
+      
+<pre><code class="language-bash"># Find info in container (grep for yml file, ports, env variables)
+docker inspect &lt;container name&gt;
+
+# Show running containers
+docker ps 
+
+# Show all containers (including stopped)
+docker ps -a
+
+# Show images
+docker image ls</code></pre>
+
+      <h2>Running Containers</h2>
+      
+<pre><code class="language-bash"># Run a container
+docker run &lt;image&gt;
+docker container run &lt;image&gt;
+
+# Attach to running container
+docker attach &lt;container&gt;
+
+# Run docker-compose with specific file in background
+docker-compose -f filename.yml up -d
+
+# Bring down containers
+docker-compose -f filename.yml down
+
+# Execute command in container (usually bash)
+docker exec -it &lt;container&gt; &lt;command&gt;</code></pre>
+
+      <h2>Copy Files</h2>
+      
+<pre><code class="language-bash"># Copy file from container to host
+docker cp containername:/usr/share/doc/zabbix-server-pgsql-/create/schema.sql ./schema.sql</code></pre>
+
+      <!-- Post Navigation -->
+      <nav class="post-nav">
+        <div class="post-nav__link" style="visibility: hidden;">
+          <!-- No previous post -->
+        </div>
+        <a href="/posts/new-post/" class="post-nav__link post-nav__link--next">
+          <span class="post-nav__label">Next →</span>
+          <span class="post-nav__title">Linux: Creating a new filesystem</span>
+        </a>
+      </nav>
+      
+    </div>
+  </article>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <nav class="footer__nav">
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/blog/">Posts</a>
+        </nav>
+        <p class="footer__copyright">&copy; 2024 Matthew McGovern. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+</body>
+</html>
+

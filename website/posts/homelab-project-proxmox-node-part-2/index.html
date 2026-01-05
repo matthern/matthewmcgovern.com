@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homelab Project: Proxmox Node Part 2 - Matthew McGovern</title>
+    <link rel="icon" type="image/png" href="/assets/images/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="nav-container">
+            <a href="/" class="logo">Matthew McGovern</a>
+            <button class="mobile-menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/#about">About</a></li>
+                <li><a href="/#interests">Interests</a></li>
+                <li><a href="/blog/">Posts</a></li>
+                <li><a href="/resume/">Resume</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="post-content">
+        <article>
+            <header class="post-header">
+                <h1>Homelab Project: Proxmox Node Part 2</h1>
+                <div class="post-meta">
+                    <span class="post-date">September 14, 2023</span>
+                    <span class="post-author">Matthew McGovern</span>
+                </div>
+            </header>
+
+            <div class="post-body">
+                <p>With the hardware installed, next step is installing proxmox. When clustering Proxmox recommends using the same CPU type as other nodes, this is so you do not find issues with migrating VMs. My first node is also a Dell Optiplex mini PC; the 3070 and the new one Optiplex 7080 so this should not be an issue. I have decided to install Proxmox 7.4 as this is what is on the first node. My first node was a bit out of date, update wise so I updated using the Proxmox GUI, which just runs an apt get for packages from the community proxmox repo.</p>
+
+                <p>For proxmox you should use <a href="https://etcher.balena.io/" target="_blank">balenaetcher</a> to flash a USB, boot from this and install onto the m.32 drive, if using rufus there is a messy setup with building its own grub, balenaetcher just works. The proxmox install will ask for an IP address, email address, hostname and that's about it.</p>
+
+                <h2>Add Community Repo</h2>
+                <pre><code class="language-bash"># Add to /etc/apt/sources.list
+# Not for production use
+deb http://download.proxmox.com/debian bullseye pve-no-subscription</code></pre>
+
+                <p>Then I installed vim because I am not good at using the vi that this debian has standard. Then install updates on both nodes using the Proxmox GUI so both nodes are updated, its probably good to reboot each one to get the kernel updates as well.</p>
+
+                <h2>Network Setup</h2>
+                <p>For the clustering I had 2 USB to ethernet cables giving each node 3 NICs. I setup 2 extra networks on each node, one 2.5G and one 1G, and I plugged in one at a time to make sure I knew which was which. They are setup as 'Linux Bridge'.</p>
+
+                <h2>Joining the Cluster</h2>
+                <p>Then we use the datacenter > cluster tab in the UI to join the cluster. We paste this info into the 2nd node and use root password to join. This will ask which network to use as well, as we can see it will be on its own 1GB network in 10.0.10.0/24.</p>
+
+                <p>Cluster ring for each node can be seen in:</p>
+                <pre><code class="language-bash">/etc/corosync/corosync.conf</code></pre>
+
+                <p>Can see the 3 networks, they will fall back using ring network if one fails for the clustering. The first address is 1gb dedicated to the cluster, the second the 2.5GB and the 3rd the normal or 'public' network that the nodes reside on.</p>
+
+                <p>In the proxmox webUI in the datacentre options there is a section to define which 'Linux Bridge' network can be used for migrations. I added all local storage as thin provisioned LVM, this way I could run snapshots, and its a filesystem type I did not get a chance to use much on the first node. My NAS would act as shared storage, which I added on the new node as an NFS share using the proxmox GUI.</p>
+
+                <h2>Migration Testing</h2>
+                <p>My migration tests for VMs from one node to another went well. It is instant with the shared storage and takes a few minutes for small VMs when changing storage, although this was without any downtime to the VMs. The speeds were using the migration network and is looking very fast.</p>
+
+                <p>One thing to note is that this kind of setup is not High Availability. This requires 3 nodes, as 2 votes are needed for Quorum for the cluster to decide which node to fall back on when migrating VMs. This could be something to think about for the next hardware project.</p>
+
+                <p>Once the new node is clustered I added an extra USB HDD for backups and passed through the iGPU so that my Plex VM's could use it exclusively.</p>
+
+                <h2>Useful Resources</h2>
+                <ul>
+                    <li><a href="https://ostechnix.com/add-external-usb-storage-to-proxmox/" target="_blank">Add External USB Storage to Proxmox</a></li>
+                    <li><a href="https://3os.org/infrastructure/proxmox/gpu-passthrough/igpu-passthrough-to-vm/#proxmox-configuration-for-igpu-full-passthrough" target="_blank">iGPU Passthrough to VM</a></li>
+                </ul>
+
+                <h2>NIC Issues</h2>
+                <p>An issue faced was regarding a NIC in the new node, this could have been an incompatibility with the e1000 driver in debian/proxmox. I needed to install ethtool and turn off some features which were causing issues and brought the NIC offline. I did expect the USB NICs to have issues, but shared storage and the cluster was still connected via the migration and cluster links. This was because the corosync and migration networks were separate; however the second node could not reach out on the 'public' network which was the NIC in the Dell box itself.</p>
+
+                <p><a href="https://forum.proxmox.com/threads/e1000-driver-hang.58284/" target="_blank">Proxmox Forum Discussion on e1000 driver</a></p>
+
+                <p>This was a fun project and now my somewhat useful home server gives me a bit of room to learn more about virtualization and linux machines/containers. At low use the whole setup of 2x Mini PC, 1 x NAS, 3 x switches and 2 x external HDD are around 120 Watts and 170 at high load according to my UPS monitoring, averaging out which I am pretty happy with.</p>
+            </div>
+
+            <nav class="post-navigation">
+                <a href="/posts/homelab-project-proxmox-node-part-1/" class="prev-post">← Previous: Homelab Project: Proxmox Node Part 1</a>
+                <a href="/posts/nsx-edge-commands/" class="next-post">Next: NSX Edge Commands →</a>
+            </nav>
+        </article>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-content">
+            <p>&copy; 2024 Matthew McGovern. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="/assets/js/main.js"></script>
+</body>
+</html>
+
