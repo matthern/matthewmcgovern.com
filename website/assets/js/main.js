@@ -136,3 +136,53 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+// Lightbox for images
+document.addEventListener('DOMContentLoaded', () => {
+  // Create lightbox element
+  const lightbox = document.createElement('div');
+  lightbox.className = 'lightbox';
+  lightbox.innerHTML = `
+    <button class="lightbox__close" aria-label="Close">&times;</button>
+    <img class="lightbox__img" src="" alt="">
+    <p class="lightbox__caption"></p>
+  `;
+  document.body.appendChild(lightbox);
+  
+  const lightboxImg = lightbox.querySelector('.lightbox__img');
+  const lightboxCaption = lightbox.querySelector('.lightbox__caption');
+  const lightboxClose = lightbox.querySelector('.lightbox__close');
+  
+  // Get all clickable images (interests section + post content images)
+  const clickableImages = document.querySelectorAll('.interests__images img, .post-content figure img, .post-content > .container img, .post-content > .container--narrow img');
+  
+  clickableImages.forEach(img => {
+    img.addEventListener('click', () => {
+      lightboxImg.src = img.src;
+      lightboxImg.alt = img.alt;
+      
+      // Get caption from figcaption or alt text
+      const figcaption = img.closest('figure')?.querySelector('figcaption');
+      lightboxCaption.textContent = figcaption?.textContent || img.alt || '';
+      
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+  });
+  
+  // Close lightbox on click
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox || e.target === lightboxClose) {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+  
+  // Close lightbox on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('active')) {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  });
+});
+
