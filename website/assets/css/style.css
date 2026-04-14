@@ -580,7 +580,7 @@ a:hover {
 /* ---------- Responsive ---------- */
 @media (max-width: 768px) {
   :root {
-    --header-height: 70px;
+    --header-height: 60px;
   }
 
   .header {
@@ -590,11 +590,19 @@ a:hover {
   h1 { font-size: 2rem; }
   h2 { font-size: 1.5rem; }
   
+  .header__logo img {
+    height: 36px;
+  }
+  
+  .header__title {
+    font-size: 1rem;
+  }
+  
   .header__inner {
     flex-wrap: wrap;
     height: auto;
     min-height: var(--header-height);
-    padding: var(--spacing-sm) 0;
+    padding: var(--spacing-xs) 0;
   }
   
   .nav-toggle {
