@@ -582,6 +582,10 @@ a:hover {
   :root {
     --header-height: 70px;
   }
+
+  .header {
+    background: var(--color-bg-dark);
+  }
   
   h1 { font-size: 2rem; }
   h2 { font-size: 1.5rem; }
