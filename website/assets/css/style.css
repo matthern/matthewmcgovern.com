@@ -592,6 +592,9 @@ a:hover {
   
   .header__inner {
     flex-wrap: wrap;
+    height: auto;
+    min-height: var(--header-height);
+    padding: var(--spacing-sm) 0;
   }
   
   .nav-toggle {
@@ -601,7 +604,7 @@ a:hover {
   .nav__list {
     display: none;
     position: absolute;
-    top: var(--header-height);
+    top: 100%;
     left: 0;
     right: 0;
     background: var(--color-bg-darker);
