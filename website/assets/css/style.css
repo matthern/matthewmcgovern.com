@@ -311,6 +311,18 @@ a:hover {
 }
 
 /* ---------- Interests Section ---------- */
+.interests__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+@media (min-width: 768px) {
+  .interests__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .interests__images {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
