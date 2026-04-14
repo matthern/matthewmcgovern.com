@@ -73,6 +73,10 @@
       
       <p>In this post I will document adding a Dell Optiplex 7080 Micro node to my existing Proxmox cluster. The plan is to have a few separate networks, defined on each host and using unmanaged switches for those networks: one dedicated 1GB for the corosync process for clustering the nodes which requires low latency, one for 2.5GB for migration of VM's on the clusters which requires more bandwidth for faster transfers. Another will be connected to the gateway. The NAS can be connected on a 10GB port of the switch sometime in the future.</p>
 
+      <a href="/assets/images/uploads/2023/07/home_network.png" target="_blank">
+        <img src="/assets/images/uploads/2023/07/home_network-768x386.png" alt="Home network diagram" style="max-width: 100%; height: auto; margin: 1rem 0;" />
+      </a>
+
       <p>This is a bit of an experiment and admitted janky setup using multiple USB to 2.5GBE and 1GBE ethernet cables for the extra NICs on the nodes.</p>
 
       <p>Resources:</p>
@@ -86,6 +90,15 @@
       <p>I already have one proxmox node setup on a Optiplex 3070. This is low power, has barely any moving parts (good for long time usage) and is cheapish, quiet and does not take up much room. One other thing that is good about these mini computers is that the hardware is easy to upgrade.</p>
 
       <p>The small black fan pops right out and the RAM can be added. The blue drive caddy is also very easy to remove, and reveals a nvme drive underneath as well as housing the 2.5 SSD.</p>
+
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 1rem 0;">
+        <a href="/assets/images/uploads/2023/07/3024-1632-max-scaled.jpg" target="_blank" style="flex: 1; min-width: 300px;">
+          <img src="/assets/images/uploads/2023/07/3024-1632-max-768x414.jpg" alt="Proxmox node hardware inside view" style="max-width: 100%; height: auto;" />
+        </a>
+        <a href="/assets/images/uploads/2023/07/3024-2455-max-scaled.jpg" target="_blank" style="flex: 1; min-width: 300px;">
+          <img src="/assets/images/uploads/2023/07/3024-2455-max-768x623.jpg" alt="Proxmox node hardware details" style="max-width: 100%; height: auto;" />
+        </a>
+      </div>
 
       <p>For this node I added some extra storage and resources:</p>
       <ul>
