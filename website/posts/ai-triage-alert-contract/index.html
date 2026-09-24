@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- EDIT: Change the title -->
+  <title>POST TITLE - Matthew McGovern</title>
+  <!-- EDIT: Change the description -->
+  <meta name="description" content="POST DESCRIPTION">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@400;500&family=Roboto+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  
+  <!-- Syntax Highlighting (for code blocks) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/images/favicon.png" sizes="32x32">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header__inner">
+        <div class="header__logo">
+          <a href="/">
+            <img src="/assets/images/logo.png" alt="Matthew McGovern">
+          </a>
+          <span class="header__title"><a href="/">MATTHEW MCGOVERN</a></span>
+        </div>
+        
+        <nav class="nav">
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+          
+          <ul class="nav__list">
+            <li><a href="/" class="nav__link">Home</a></li>
+            <li><a href="/#about" class="nav__link">About</a></li>
+            <li><a href="/#interests" class="nav__link">Interests</a></li>
+            <li><a href="/resume/" class="nav__link">Resume</a></li>
+            <li><a href="/blog/" class="nav__link nav__link--active">Posts</a></li>
+          </ul>
+          
+          <div class="social-links">
+            <a href="mailto:matt@matthewmcgovern.com" title="Email">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/matthewmcgovern-a844391a2" target="_blank" rel="noopener" title="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            </a>
+            <a href="https://github.com/matthern" target="_blank" rel="noopener" title="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+            </a>
+            <a href="https://hub.docker.com/u/matthewmjpm" target="_blank" rel="noopener" title="Docker Hub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.185-.186h-2.12a.186.186 0 0 0-.185.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288z"/></svg>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Header -->
+  <section class="post-header">
+    <div class="container container--narrow">
+      <!-- EDIT: Change the title -->
+      <h1 class="post-header__title">Ai Triage Alert Contract</h1>
+      <!-- EDIT: Change the excerpt -->
+      <p class="post-header__excerpt">This post turns a cross-repository AI triage design into a practical homelab narrative: keep the proven Grafana → Keep → Holmes path, fix evidence and ownership, and evolve identity, lifecycle, and dependency-aware investigation without overpromising.</p>
+      <!-- EDIT: Change the date -->
+      <p class="post-header__meta">
+        <span>Matthew McGovern</span> · <span>September 24, 2026</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Post Content -->
+  <article class="post-content">
+    <div class="container container--narrow">
+      
+      <!-- EDIT: Add your content here -->
+<h2>AI triage: lifecycle, evidence, and ownership</h2>
+
+<p>When a homelab starts running AI-assisted incident triage, the tempting answer is to make the system feel smarter by adding more context, more playbooks, or more aggressive automation. The harder, more useful answer is to make the system more honest: preserve the parts that already work, make the evidence auditable, separate identity from noise, and keep durable runtime state out of Git configuration.</p>
+
+<p>That is the goal here. The existing Grafana → Keep → Holmes investigation flow remains the foundation. New alerts should enter through consistent identity and policy. Flapping alerts should not trigger repeated investigations. Symptoms should be correlated through known application dependencies, not guessed relationships. Git-managed YAML is the source of truth for policy and application/dependency definitions, while durable runtime state and incident history remain operational data, not configuration.</p>
+
+<h2>What is deployed versus what is still unfinished</h2>
+
+<p>The most important part of any deep-dive is knowing what is actually running. As of the 2026-09-23 checkpoint, the system is in a deliberately staged state: some pieces are live, some are tested, and some are still design work.</p>
+
+<ul>
+  <li><strong>Ingestion and triage:</strong> the existing Grafana → Keep → Holmes flow remains enabled.</li>
+  <li><strong>Prompt:</strong> a shortened prompt was loaded as workflow revision 31, with previous text archived.</li>
+  <li><strong>Environment skill:</strong> the complete reference was restored after a Helm override regression.</li>
+  <li><strong>Holmes wrapper:</strong> conflicting mandatory narration was removed, and CI plus rollout were verified.</li>
+  <li><strong>Resolver safety:</strong> suppressed firing alerts are retained, and malformed responses fail closed.</li>
+  <li><strong>Grouping:</strong> the existing alert name plus boundary grouping remains in place; no new dependency grouping has been deployed.</li>
+  <li><strong>Closure:</strong> <code>resolveOn: never</code> plus a five-hour resolver remains.</li>
+  <li><strong>Eligibility labels:</strong> prepared on a feature branch, but not deployed.</li>
+  <li><strong>Admission and deduplication:</strong> core and read-only shadow adapter tested, but no live dispatcher or seeded ledger yet.</li>
+  <li><strong>Answer quality:</strong> prompt-only comparison failed review; post-repair comparison is pending.</li>
+</ul>
+
+<p>A useful mental model is this: a firing notification is not proof of delivery, incident creation, or a fresh investigation. It may simply join an existing incident. That distinction matters because many triage systems accidentally treat “alert fired” as “AI must investigate now.” This design deliberately avoids that shortcut.</p>
+
+<h2>What the evidence actually established</h2>
+
+<p>The strongest part of this work is that it does not assume a single root cause for poor AI answers. Instead, it separates regressions, prompt behavior, tooling constraints, and evidence gaps.</p>
+
+<p>First, a GitOps change appended a partial skill overlay. Helm replaced the full content string, losing system locations, Loki selectors, and freshness guidance. That proves a regression, but it does not prove that every poor answer came from that regression. The distinction matters: a broken overlay can make answers worse, but it does not explain every missing log, unsupported causal claim, or weak diagnosis.</p>
+
+<p>Second, the upstream Holmes wrapper required narration and checklists that conflicted with the workflow prompt. The custom image removes that exact block with a checksum guard. It does not replace tools or diagnostic skill content. In other words, the fix was about removing an unwanted constraint, not pretending the model suddenly had better diagnostic instincts.</p>
+
+<p>Third, prompt revision 31 did not fix quality by itself. One execution completed in 812 seconds with 38 calls, but it still failed review because it missed subject logs and made an unsupported CPU causality claim. Cumulative usage was 865,006 tokens, including repeated and cached context, not one context window. Tool time summed to about 15.9 seconds, but the remaining time is not thereby proven to be purely model computation. That level of precision matters when you are trying to decide whether a prompt, tool, model, or evidence gap is the real problem.</p>
+
+<p>Fourth, later low container CPU samples do not disprove earlier high CPU. The correct finding is not “CPU was fine,” but rather “the claimed cause and time window are missing evidence.” That is a much more useful conclusion for an AI triage system, because it keeps the investigation honest instead of forcing a tidy story.</p>
+
+<p>Fifth, earlier GitLab investigations were useful. The project → branch → pipeline → failed job trace procedure should be preserved as a regression test. If a future change breaks that trace path, the system should notice.</p>
+
+<p>The approved repair chain was: canonical source <code>8b0f401</code>, scoped installer <code>7273fb5</code>, Flux skill publication through <code>e64e676</code>, and wrapper deployment <code>7926f67</code>. Pipeline 44560 passed, Helm became Ready, and the running image digest plus absence of forced narration were verified. Model and toolset hashes were unchanged. The exact evidence lives in <code>k8s-mgmt-flux/docs/triage-experiments/prompt-v31-powerful-owl.yaml</code>.</p>
+
+<h2>Ownership: who owns what</h2>
+
+<p>One of the biggest failure modes in homelab AI tooling is unclear ownership. If every repository can change prompts, skills, workflows, and runtime behavior, the system becomes a pile of overlapping assumptions. The design here assigns responsibility deliberately.</p>
+
+<ul>
+  <li><strong>k8s-flux:</strong> production Grafana rules, labels, and eligibility validation.</li>
+  <li><strong>k8s-mgmt-flux:</strong> Keep/Robusta GitOps, encrypted workflows, prompt archives, rendered skills, lifecycle code, and experiments.</li>
+  <li><strong>dev-workspace-config:</strong> canonical harness-agnostic skills and scoped installation.</li>
+  <li><strong>container-images:</strong> CI-built, digest-pinned Holmes derivative and build tests.</li>
+  <li><strong>ai-setup / container-control:</strong> existing model runtime and control, held constant during comparisons.</li>
+  <li><strong>docs-and-planning:</strong> cross-repository design, not duplicate deployment manifests.</li>
+</ul>
+
+<p>Operational sources include <code>k8s-mgmt-flux/docs/triage-operations-runbook.md</code>, <code>docs/holmes-prompt-design.md</code>, <code>docs/triage-admission-design.md</code>, and <code>docs/triage-resolver-validation.md</code>. The image build guide lives in <code>container-images/docs/holmes-skill-wrapper-build.md</code>.</p>
+
+<p>This ownership model is not bureaucratic. It is what makes the system debuggable. When an answer is bad, you need to know whether the problem came from alert identity, prompt behavior, skill content, wrapper constraints, model runtime, or missing evidence.</p>
+
+<h2>Target design: identity and eligibility</h2>
+
+<p>The target design separates three things that are often accidentally merged: stable source/rule/boundary identity, affected subjects, and display titles. That separation is the foundation for better triage.</p>
+
+<p>Alerts should carry structured context rather than serializing a database into an incident name. Real cluster, namespace, service, and container labels should be preserved. Missing identity should be treated as explicit uncertainty, not as permission to pick the busiest host and hope for the best.</p>
+
+<p>The prepared triage policy distinguishes <em>investigate</em> from <em>observe-only</em>, with a reason for known NAS capacity alerts. Name-specific CEL exclusions should be replaced only after migration validation. Opting out of AI does not hide the alert; different NAS symptoms can still justify investigation.</p>
+
+<p>This is a small idea with a large payoff. If the system knows what an alert is, what it affects, and what it is allowed to do, then it can make better decisions about whether to investigate, join an existing incident, or simply observe.</p>
+
+<h2>Target design: lifecycle</h2>
+
+<p>Lifecycle is where triage systems either become calm or become noisy. The current correlation uses alert name plus boundary, a 12-hour window, and <code>resolveOn: never</code>, with cron jobs providing closure. Shortening closure alone can increase new incidents and repeated AI calls, so the proposed design is more careful.</p>
+
+<p>The proposed persistent gate admits initial impact, material new impact, and verified recurrence. It coalesces pending work and requires continuous explicit recovery. Silence, missing data, and stale samples are not recovery. A running slot should not be freed on timeout; the real execution should be reconciled. Prior successful investigations should be seeded before enabling the gate. And the system should never run both automatic dispatch paths at the same time.</p>
+
+<p>That last rule is especially important. If two dispatch paths can fire, the system can create duplicate incidents, duplicate AI calls, and duplicate “investigations” that are really the same evidence being interpreted twice. A calm triage system needs one authoritative path.</p>
+
+<h2>Target design: skills and dependencies</h2>
+
+<p>The universal prompt should remain concise: scope, evidence, and response rules. Skills should describe system locations, label semantics, safe tools, and helpful diagnostic procedures. They should not contain predetermined diagnoses. A skill per alert is not required.</p>
+
+<p>The full environment reference should be preserved, and changes should be measured before replacing it. This is a practical homelab lesson: the most valuable skill is often the one that tells the model where to look, how to read labels, and which tools are safe to use. It is not the one that tells the model what the answer must be.</p>
+
+<p>Application YAML should declare stable service IDs, ownership, hosting, evidence selectors, and explicit dependencies. The schema, location, freshness checks, and initial inventory still need to be designed and tested. DNS, NFS, and network causality require an actual link, not co-location or timing alone. Individual symptoms should remain visible.</p>
+
+<p>This dependency-aware approach should run alongside the current correlation first. That is the safe way to prove it works: compare the new dependency view against the existing grouping before making it the primary source of truth.</p>
+
+<h2>Completion sequence</h2>
+
+<ol>
+  <li>Review one post-repair run, then historically good GitLab, Kubernetes, datasource, and recurring-incident cases. Record exact versions, evidence, time, tool errors, and tokens. Live reruns are not frozen-input A/B tests.</li>
+  <li>Verify Grafana firing/resolved delivery into Keep, including silence, all-clear, late events, and incomplete reads. A provider annotation-history failure does not prove resolved push delivery cannot work.</li>
+  <li>Finish history seeding, non-Grafana normalization, durable dispatch, ambiguous-request handling, backups, and health metrics for admission.</li>
+  <li>Shadow-test label and identity migration, then cut over through GitOps. Prove initial triage, no short-flap repeats, and genuine recovery/recurrence.</li>
+  <li>Implement the dependency inventory beside existing grouping. If needed, compare Pi/Holmes with equivalent model, settings, and evidence. Replacing the harness is not yet a proven requirement.</li>
+  <li>Observe 24–48 hours after cutover and review missed or noisy cases. This is a proposed acceptance window, not completed evidence or a promised deadline.</li>
+</ol>
+
+<p>The sequence is intentionally conservative. It favors evidence over enthusiasm. It asks the system to prove that it can handle the boring cases before it is allowed to claim that it can handle the interesting ones.</p>
+
+<h2>Verification and unmanaged state</h2>
+
+<p>From <code>k8s-mgmt-flux</code>, with Python 3, PyYAML, and the management kubeconfig, the verification commands are:</p>
+
+<pre><code>PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
+python3 scripts/triage-provenance.py
+python3 scripts/triage_execution_report.py &lt;execution-id&gt;
+</code></pre>
+
+<p>At rollout, 39 tests passed. Fixture success is not diagnosis quality, but it is a necessary guardrail. Versions include Keep app 0.54.3/chart 0.1.97, Robusta chart 0.47.0, and the Holmes derivative <code>a83b7ae6</code>, with the digest pinned in GitOps. Official sources are the Keep Helm charts, Robusta charts, and HolmesGPT.</p>
+
+<p>Not in Git: plaintext credentials, private age keys, raw model conversations, live incident history, and future ledger/WAL/backups. Encrypted Secrets, canonical skills, prompt history, and reviewed experiment records are in Git.</p>
+
+<h2>Why this matters for a homelab</h2>
+
+<p>A homelab AI triage system is not just a toy. It is a control plane for understanding your own infrastructure. If it is noisy, it trains you to ignore it. If it is opaque, it becomes a black box you cannot trust. If it is honest about what it knows, what it does not know, and what evidence it used, it becomes a genuinely useful part of the stack.</p>
+
+<p>The design in this post is not about making the AI sound smarter. It is about making the system more reliable: preserve the working path, fix the regressions, keep ownership clear, make identity explicit, make lifecycle safe, and let dependencies be declared rather than guessed. That is the kind of engineering that turns a clever experiment into something you can actually live with.</p>
+<!-- END OF CONTENT -->
+      
+      <!-- Post Navigation -->
+      <!-- EDIT: Update the prev/next links, or remove if not needed -->
+      <nav class="post-nav">
+        <a href="/posts/previous-post-slug/" class="post-nav__link">
+          <span class="post-nav__label">← Previous</span>
+          <span class="post-nav__title">Previous Post Title</span>
+        </a>
+        <a href="/posts/next-post-slug/" class="post-nav__link post-nav__link--next">
+          <span class="post-nav__label">Next →</span>
+          <span class="post-nav__title">Next Post Title</span>
+        </a>
+      </nav>
+      
+    </div>
+  </article>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <nav class="footer__nav">
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/#interests">Interests</a>
+          <a href="/resume/">Resume</a>
+          <a href="/blog/">Posts</a>
+        </nav>
+        <div class="social-links">
+          <a href="mailto:matt@matthewmcgovern.com" title="Email"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="https://www.linkedin.com/in/matthewmcgovern-a844391a2" target="_blank" rel="noopener" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg></a>
+          <a href="https://github.com/matthern" target="_blank" rel="noopener" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg></a>
+          <a href="https://hub.docker.com/u/matthewmjpm" target="_blank" rel="noopener" title="Docker Hub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.185-.186h-2.12a.186.186 0 0 0-.185.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288z"/></svg></a>
+        </div>
+        <p class="footer__copyright">&copy; 2024 Matthew McGovern. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/ascii-bg.js"></script>
+</body>
+</html>
+
+<!--
+================================================================================
+HOW TO CREATE A NEW BLOG POST:
+================================================================================
+
+1. Copy this template to: /posts/your-post-slug/index.html
+   Example: /posts/my-new-linux-tip/index.html
+
+2. Edit the following in the new file:
+   - <title> tag
+   - <meta name="description"> tag
+   - <h1 class="post-header__title">
+   - <p class="post-header__excerpt">
+   - Date in post-header__meta
+   - All content in the <article> section
+   - Previous/Next navigation links
+
+3. Add the post to /assets/data/posts.json:
+   {
+     "id": "your-post-slug",
+     "title": "Your Post Title",
+     "excerpt": "Brief description of your post.",
+     "date": "2024-01-01",
+     "author": "Matthew McGovern",
+     "categories": ["linux", "bash"],
+     "slug": "your-post-slug"
+   }
+
+4. For images:
+   - Save images to: /assets/images/uploads/YEAR/MONTH/
+   - Reference them as: /assets/images/uploads/2024/01/image-name.png
+
+5. For code blocks, use:
+   <pre><code class="language-bash">your code</code></pre>
+   
+   Supported languages: bash, javascript, python, json, yaml, etc.
+
+================================================================================
+-->
+

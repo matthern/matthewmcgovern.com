@@ -1,5 +1,12 @@
 [
   {
+    "slug": "ai-triage-alert-contract",
+    "title": "Ai Triage Alert Contract",
+    "date": "September 24, 2026",
+    "author": "Matthew McGovern",
+    "excerpt": "This post turns a cross-repository AI triage design into a practical homelab narrative: keep the proven Grafana \u2192 Keep \u2192 Holmes path, fix evidence and ownership, and evolve identity, lifecycle, and dependency-aware investigation without overpromising."
+  },
+  {
     "slug": "setup-jump-host-with-vpn-client",
     "title": "Setup Jump Host with VPN Client",
     "date": "November 24, 2023",
