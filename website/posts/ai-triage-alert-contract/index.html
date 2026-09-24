@@ -89,61 +89,57 @@
       <!-- EDIT: Add your content here -->
 <h2>AI triage: lifecycle, evidence, and ownership</h2>
 
-<p>When a homelab starts running AI-assisted incident triage, the tempting answer is to make the system feel smarter by adding more context, more playbooks, or more aggressive automation. The harder, more useful answer is to make the system more honest: preserve the parts that already work, make the evidence auditable, separate identity from noise, and keep durable runtime state out of Git configuration.</p>
+<p>When a homelab starts using AI-assisted incident triage, the tempting answer is to add more context, more playbooks, or more automation. The more useful answer is to make the system easier to audit: preserve the parts that already work, keep evidence explicit, separate identity from noise, and keep durable runtime state out of Git configuration.</p>
 
-<p>That is the goal here. The existing Grafana → Keep → Holmes investigation flow remains the foundation. New alerts should enter through consistent identity and policy. Flapping alerts should not trigger repeated investigations. Symptoms should be correlated through known application dependencies, not guessed relationships. Git-managed YAML is the source of truth for policy and application/dependency definitions, while durable runtime state and incident history remain operational data, not configuration.</p>
+<p>The goal is not to make the AI sound smarter. It is to make the triage path predictable. Alerts should enter through consistent identity and policy. Flapping alerts should not trigger repeated investigations. Symptoms should be correlated through declared dependencies, not guessed relationships. Git-managed YAML can be the source of truth for policy and application definitions, while incident history, runtime state, and raw model conversations remain operational data.</p>
 
 <h2>What is deployed versus what is still unfinished</h2>
 
-<p>The most important part of any deep-dive is knowing what is actually running. As of the 2026-09-23 checkpoint, the system is in a deliberately staged state: some pieces are live, some are tested, and some are still design work.</p>
+<p>A staged rollout should make the current state explicit. Some pieces may be live, some may be tested, and some may still be design work. That distinction matters because a triage system is easy to overstate when every improvement is described as if it has already changed behavior.</p>
 
 <ul>
-  <li><strong>Ingestion and triage:</strong> the existing Grafana → Keep → Holmes flow remains enabled.</li>
-  <li><strong>Prompt:</strong> a shortened prompt was loaded as workflow revision 31, with previous text archived.</li>
-  <li><strong>Environment skill:</strong> the complete reference was restored after a Helm override regression.</li>
-  <li><strong>Holmes wrapper:</strong> conflicting mandatory narration was removed, and CI plus rollout were verified.</li>
-  <li><strong>Resolver safety:</strong> suppressed firing alerts are retained, and malformed responses fail closed.</li>
-  <li><strong>Grouping:</strong> the existing alert name plus boundary grouping remains in place; no new dependency grouping has been deployed.</li>
-  <li><strong>Closure:</strong> <code>resolveOn: never</code> plus a five-hour resolver remains.</li>
-  <li><strong>Eligibility labels:</strong> prepared on a feature branch, but not deployed.</li>
+  <li><strong>Ingestion and triage:</strong> the existing Grafana → Keep → Holmes flow remains the baseline.</li>
+  <li><strong>Prompt:</strong> a shorter prompt should be versioned, with previous text archived.</li>
+  <li><strong>Environment skill:</strong> the full reference should be preserved rather than replaced by a partial overlay.</li>
+  <li><strong>Holmes wrapper:</strong> unwanted mandatory narration should be removed, and the change should be verified in CI and rollout.</li>
+  <li><strong>Resolver safety:</strong> suppressed firing alerts should be retained, and malformed responses should fail closed.</li>
+  <li><strong>Grouping:</strong> alert name plus boundary grouping can remain the default until dependency grouping is proven.</li>
+  <li><strong>Closure:</strong> <code>resolveOn: never</code> plus a time-based resolver can be used while lifecycle rules are still being validated.</li>
+  <li><strong>Eligibility labels:</strong> prepared but not deployed until migration is validated.</li>
   <li><strong>Admission and deduplication:</strong> core and read-only shadow adapter tested, but no live dispatcher or seeded ledger yet.</li>
-  <li><strong>Answer quality:</strong> prompt-only comparison failed review; post-repair comparison is pending.</li>
+  <li><strong>Answer quality:</strong> prompt-only comparison is not enough; post-repair comparison should be reviewed.</li>
 </ul>
 
-<p>A useful mental model is this: a firing notification is not proof of delivery, incident creation, or a fresh investigation. It may simply join an existing incident. That distinction matters because many triage systems accidentally treat “alert fired” as “AI must investigate now.” This design deliberately avoids that shortcut.</p>
+<p>A useful mental model is this: a firing notification is not proof of delivery, incident creation, or a fresh investigation. It may simply join an existing incident. That distinction matters because many triage systems accidentally treat “alert fired” as “AI must investigate now.” A better design deliberately avoids that shortcut.</p>
 
-<h2>What the evidence actually established</h2>
+<h2>What the evidence should establish</h2>
 
-<p>The strongest part of this work is that it does not assume a single root cause for poor AI answers. Instead, it separates regressions, prompt behavior, tooling constraints, and evidence gaps.</p>
+<p>A useful evidence model does not assume a single root cause for poor AI answers. It separates regressions, prompt behavior, tooling constraints, and evidence gaps.</p>
 
-<p>First, a GitOps change appended a partial skill overlay. Helm replaced the full content string, losing system locations, Loki selectors, and freshness guidance. That proves a regression, but it does not prove that every poor answer came from that regression. The distinction matters: a broken overlay can make answers worse, but it does not explain every missing log, unsupported causal claim, or weak diagnosis.</p>
+<p>For example, a GitOps change can append a partial skill overlay and replace the full content string, losing system locations, selectors, and freshness guidance. That can prove a regression, but it does not prove that every poor answer came from that regression. A broken overlay can make answers worse, but it does not explain every missing log, unsupported causal claim, or weak diagnosis.</p>
 
-<p>Second, the upstream Holmes wrapper required narration and checklists that conflicted with the workflow prompt. The custom image removes that exact block with a checksum guard. It does not replace tools or diagnostic skill content. In other words, the fix was about removing an unwanted constraint, not pretending the model suddenly had better diagnostic instincts.</p>
+<p>Similarly, a wrapper can impose narration and checklists that conflict with the workflow prompt. Removing that constraint is a fix, but it does not mean the model suddenly has better diagnostic instincts. The fix is about removing an unwanted constraint, not pretending the model became smarter.</p>
 
-<p>Third, prompt revision 31 did not fix quality by itself. One execution completed in 812 seconds with 38 calls, but it still failed review because it missed subject logs and made an unsupported CPU causality claim. Cumulative usage was 865,006 tokens, including repeated and cached context, not one context window. Tool time summed to about 15.9 seconds, but the remaining time is not thereby proven to be purely model computation. That level of precision matters when you are trying to decide whether a prompt, tool, model, or evidence gap is the real problem.</p>
+<p>Prompt changes should be evaluated with enough precision to decide whether the problem is prompt, tool, model, or evidence. Execution time, tool time, token usage, and repeated context are useful, but they should not be over-interpreted. A long run does not prove the model spent all of that time computing; a low CPU sample later does not disprove a high CPU sample earlier. The correct conclusion is often that the claimed cause and time window are missing evidence.</p>
 
-<p>Fourth, later low container CPU samples do not disprove earlier high CPU. The correct finding is not “CPU was fine,” but rather “the claimed cause and time window are missing evidence.” That is a much more useful conclusion for an AI triage system, because it keeps the investigation honest instead of forcing a tidy story.</p>
+<p>Earlier investigations can also be useful as regression tests. If a known trace path, such as project to branch to pipeline to failed job, works today, the system should notice when a future change breaks it.</p>
 
-<p>Fifth, earlier GitLab investigations were useful. The project → branch → pipeline → failed job trace procedure should be preserved as a regression test. If a future change breaks that trace path, the system should notice.</p>
-
-<p>The approved repair chain was: canonical source <code>8b0f401</code>, scoped installer <code>7273fb5</code>, Flux skill publication through <code>e64e676</code>, and wrapper deployment <code>7926f67</code>. Pipeline 44560 passed, Helm became Ready, and the running image digest plus absence of forced narration were verified. Model and toolset hashes were unchanged. The exact evidence lives in <code>k8s-mgmt-flux/docs/triage-experiments/prompt-v31-powerful-owl.yaml</code>.</p>
+<p>The repair chain should be recorded with enough detail to reproduce it: canonical source, scoped installer, publication step, wrapper deployment, pipeline result, Helm readiness, image digest, and absence of unwanted constraints. Model and toolset hashes should be unchanged when only the wrapper or prompt is being tested.</p>
 
 <h2>Ownership: who owns what</h2>
 
-<p>One of the biggest failure modes in homelab AI tooling is unclear ownership. If every repository can change prompts, skills, workflows, and runtime behavior, the system becomes a pile of overlapping assumptions. The design here assigns responsibility deliberately.</p>
+<p>One of the biggest failure modes in homelab AI tooling is unclear ownership. If every repository can change prompts, skills, workflows, and runtime behavior, the system becomes a pile of overlapping assumptions. A better design assigns responsibility deliberately.</p>
 
 <ul>
-  <li><strong>k8s-flux:</strong> production Grafana rules, labels, and eligibility validation.</li>
-  <li><strong>k8s-mgmt-flux:</strong> Keep/Robusta GitOps, encrypted workflows, prompt archives, rendered skills, lifecycle code, and experiments.</li>
-  <li><strong>dev-workspace-config:</strong> canonical harness-agnostic skills and scoped installation.</li>
-  <li><strong>container-images:</strong> CI-built, digest-pinned Holmes derivative and build tests.</li>
-  <li><strong>ai-setup / container-control:</strong> existing model runtime and control, held constant during comparisons.</li>
-  <li><strong>docs-and-planning:</strong> cross-repository design, not duplicate deployment manifests.</li>
+  <li><strong>Alerting repository:</strong> production Grafana rules, labels, and eligibility validation.</li>
+  <li><strong>Management repository:</strong> Keep/Robusta GitOps, encrypted workflows, prompt archives, rendered skills, lifecycle code, and experiments.</li>
+  <li><strong>Workspace configuration:</strong> canonical harness-agnostic skills and scoped installation.</li>
+  <li><strong>Image repository:</strong> CI-built, digest-pinned Holmes derivative and build tests.</li>
+  <li><strong>Model runtime:</strong> existing model runtime and control, held constant during comparisons.</li>
+  <li><strong>Planning repository:</strong> cross-repository design, not duplicate deployment manifests.</li>
 </ul>
 
-<p>Operational sources include <code>k8s-mgmt-flux/docs/triage-operations-runbook.md</code>, <code>docs/holmes-prompt-design.md</code>, <code>docs/triage-admission-design.md</code>, and <code>docs/triage-resolver-validation.md</code>. The image build guide lives in <code>container-images/docs/holmes-skill-wrapper-build.md</code>.</p>
-
-<p>This ownership model is not bureaucratic. It is what makes the system debuggable. When an answer is bad, you need to know whether the problem came from alert identity, prompt behavior, skill content, wrapper constraints, model runtime, or missing evidence.</p>
+<p>Operational documentation should live where the system is operated, not scattered across unreachable notes. The image build guide should live with the image repository. This ownership model is not bureaucratic; it is what makes the system debuggable. When an answer is bad, you need to know whether the problem came from alert identity, prompt behavior, skill content, wrapper constraints, model runtime, or missing evidence.</p>
 
 <h2>Target design: identity and eligibility</h2>
 
@@ -188,16 +184,9 @@
 
 <h2>Verification and unmanaged state</h2>
 
-<p>From <code>k8s-mgmt-flux</code>, with Python 3, PyYAML, and the management kubeconfig, the verification commands are:</p>
+<p>Verification should include unit tests, provenance checks, and execution reports. At rollout, tests should pass, but fixture success is not diagnosis quality. Versions should be recorded for the alerting stack, workflow engine, and Holmes derivative, with the image digest pinned in GitOps. Official sources are the upstream Helm charts and HolmesGPT.</p>
 
-<pre><code>PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v
-python3 scripts/triage-provenance.py
-python3 scripts/triage_execution_report.py &lt;execution-id&gt;
-</code></pre>
-
-<p>At rollout, 39 tests passed. Fixture success is not diagnosis quality, but it is a necessary guardrail. Versions include Keep app 0.54.3/chart 0.1.97, Robusta chart 0.47.0, and the Holmes derivative <code>a83b7ae6</code>, with the digest pinned in GitOps. Official sources are the Keep Helm charts, Robusta charts, and HolmesGPT.</p>
-
-<p>Not in Git: plaintext credentials, private age keys, raw model conversations, live incident history, and future ledger/WAL/backups. Encrypted Secrets, canonical skills, prompt history, and reviewed experiment records are in Git.</p>
+<p>Not in Git: plaintext credentials, private keys, raw model conversations, live incident history, and future ledger/WAL/backups. Encrypted secrets, canonical skills, prompt history, and reviewed experiment records can be in Git.</p>
 
 <h2>Why this matters for a homelab</h2>
 
