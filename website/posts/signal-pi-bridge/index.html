@@ -109,7 +109,7 @@
 <h3>Agent status semantics (the second E2E bug)</h3>
 <p>The bridge waits for the session to be ready before injecting, and the status vocabulary bit me: a fresh session reports <code>idle</code>, but a <em>finished</em> turn reports <code>done</code> — not <code>idle</code>. My first version waited on <code>idle</code> alone, so a completed turn hung until the turn timeout and produced a false "couldn't extract a reply". Both <code>idle</code> and <code>done</code> mean "ready for a new turn". Reply extraction is content-based, not status-based: the last assistant message at or after the injection timestamp, read from the session transcript — which is what makes a short grace window for the transcript's flush race safe.</p>
 <p>Rounding out the design: push over polling (the daemon pushes every envelope; the bridge probes and reconnects with backoff); one serialized queue, one turn in flight; timeouts that message the phone instead of the void; and auto-spawn of a missing session through my standard pi launcher.</p>
-<h2>Results</h2>
+<h2>How it performs</h2>
 <ul>
 <li>Three real phone note-to-self cycles (September 2026): replies delivered back over Signal in ~105s, ~147s and ~305s, each including the agent's full turn.</li>
 <li>Both bugs above found and fixed during that E2E pass — neither shows up in unit-level testing; both are artifacts of the real phone → server → daemon path.</li>
