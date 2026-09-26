@@ -1,5 +1,12 @@
 [
   {
+    "slug": "signal-pi-bridge",
+    "title": "A Signal Bridge for My Coding Agent",
+    "date": "September 26, 2026",
+    "author": "Matthew McGovern",
+    "excerpt": "A note-to-self on Signal becomes a work turn for a dedicated coding-agent session in my homelab \u2014 and the agent's reply comes back over Signal."
+  },
+  {
     "slug": "setup-jump-host-with-vpn-client",
     "title": "Setup Jump Host with VPN Client",
     "date": "November 24, 2023",
