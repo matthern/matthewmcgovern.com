@@ -87,112 +87,72 @@
     <div class="container container--narrow">
       
       <!-- EDIT: Add your content here -->
-<h2>AI triage: lifecycle, evidence, and ownership</h2>
+<h2>AI triage: implementation guide</h2>
 
-<p>When a homelab starts using AI-assisted incident triage, the tempting answer is to add more context, more playbooks, or more automation. The more useful answer is to make the system easier to audit: preserve the parts that already work, keep evidence explicit, separate identity from noise, and keep durable runtime state out of Git configuration.</p>
+<h3>Goal</h3>
 
-<p>The goal is not to make the AI sound smarter. It is to make the triage path predictable. Alerts should enter through consistent identity and policy. Flapping alerts should not trigger repeated investigations. Symptoms should be correlated through declared dependencies, not guessed relationships. Git-managed YAML can be the source of truth for policy and application definitions, while incident history, runtime state, and raw model conversations remain operational data.</p>
+<p>Make AI-assisted incident triage predictable and auditable. Alerts enter with stable identity, policy decides investigate or observe, flaps do not repeat investigations, evidence is explicit, and durable runtime state stays out of Git.</p>
 
-<h3>What is deployed versus what is still unfinished</h3>
+<h3>Current state</h3>
 
-<p>A staged rollout should make the current state explicit. Some pieces may be live, some may be tested, and some may still be design work. That distinction matters because a triage system is easy to overstate when every improvement is described as if it has already changed behavior.</p>
+<pre><code>Live:
+- Grafana -> Keep -> Holmes baseline
+- Alert name + boundary grouping
+- resolveOn: never with time-based closure
 
-<ul>
-  <li><strong>Ingestion and triage:</strong> the existing Grafana → Keep → Holmes flow remains the baseline.</li>
-  <li><strong>Prompt:</strong> a shorter prompt should be versioned, with previous text archived.</li>
-  <li><strong>Environment skill:</strong> the full reference should be preserved rather than replaced by a partial overlay.</li>
-  <li><strong>Holmes wrapper:</strong> unwanted mandatory narration should be removed, and the change should be verified in CI and rollout.</li>
-  <li><strong>Resolver safety:</strong> suppressed firing alerts should be retained, and malformed responses should fail closed.</li>
-  <li><strong>Grouping:</strong> alert name plus boundary grouping can remain the default until dependency grouping is proven.</li>
-  <li><strong>Closure:</strong> <code>resolveOn: never</code> plus a time-based resolver can be used while lifecycle rules are still being validated.</li>
-  <li><strong>Eligibility labels:</strong> prepared but not deployed until migration is validated.</li>
-  <li><strong>Admission and deduplication:</strong> core and read-only shadow adapter tested, but no live dispatcher or seeded ledger yet.</li>
-  <li><strong>Answer quality:</strong> prompt-only comparison is not enough; post-repair comparison should be reviewed.</li>
-</ul>
+Tested:
+- Shorter versioned prompt; previous text archived
+- Full environment skill preserved, not replaced by partial overlay
+- Holmes wrapper without mandatory narration, verified in CI and rollout
+- Resolver safety: suppressed firing alerts retained, malformed responses fail closed
+- Core and read-only shadow admission/deduplication
 
-<p>A useful mental model is this: a firing notification is not proof of delivery, incident creation, or a fresh investigation. It may simply join an existing incident. That distinction matters because many triage systems accidentally treat “alert fired” as “AI must investigate now.” A better design deliberately avoids that shortcut.</p>
+Required before cutover:
+- Post-repair answer comparison, not prompt-only comparison
+- Eligibility labels after migration validation
+- Live dispatcher and seeded ledger
+- Dependency grouping proven against current grouping
+</code></pre>
 
-<h3>What the evidence should establish</h3>
+<h3>Evidence</h3>
 
-<p>A useful evidence model does not assume a single root cause for poor AI answers. It separates regressions, prompt behavior, tooling constraints, and evidence gaps.</p>
+<p>Separate regressions, prompt behavior, tooling constraints, and evidence gaps. A GitOps overlay regression can prove one cause, not all poor answers. Removing wrapper narration removes a constraint; it does not make the model smarter. Evaluate prompt, tool, model, and evidence using execution time, tool time, token usage, and repeated context. Do not overinterpret CPU samples. Use known trace paths, such as project to branch to pipeline to failed job, as regression tests. Record the repair chain: canonical source, scoped installer, publication step, wrapper deployment, pipeline result, Helm readiness, image digest, and absence of unwanted constraints. Keep model and toolset hashes unchanged when testing only the wrapper or prompt.</p>
 
-<p>For example, a GitOps change can append a partial skill overlay and replace the full content string, losing system locations, selectors, and freshness guidance. That can prove a regression, but it does not prove that every poor answer came from that regression. A broken overlay can make answers worse, but it does not explain every missing log, unsupported causal claim, or weak diagnosis.</p>
+<h3>Ownership</h3>
 
-<p>Similarly, a wrapper can impose narration and checklists that conflict with the workflow prompt. Removing that constraint is a fix, but it does not mean the model suddenly has better diagnostic instincts. The fix is about removing an unwanted constraint, not pretending the model became smarter.</p>
+<p>The alerting repository owns production Grafana rules, labels, and eligibility validation. The management repository owns Keep/Robusta GitOps, encrypted workflows, prompt archives, rendered skills, lifecycle code, and experiments. Workspace configuration owns canonical harness-agnostic skills and scoped installation. The image repository owns the CI-built, digest-pinned Holmes derivative and build tests. The model runtime stays constant during comparisons. The planning repository owns cross-repository design, not duplicate deployment manifests. Operational documentation lives where the system is operated; the image build guide lives with the image repository.</p>
 
-<p>Prompt changes should be evaluated with enough precision to decide whether the problem is prompt, tool, model, or evidence. Execution time, tool time, token usage, and repeated context are useful, but they should not be over-interpreted. A long run does not prove the model spent all of that time computing; a low CPU sample later does not disprove a high CPU sample earlier. The correct conclusion is often that the claimed cause and time window are missing evidence.</p>
+<h3>Identity and eligibility</h3>
 
-<p>Earlier investigations can also be useful as regression tests. If a known trace path, such as project to branch to pipeline to failed job, works today, the system should notice when a future change breaks it.</p>
+<p>Separate stable source/rule/boundary identity, affected subjects, and display titles. Preserve real cluster, namespace, service, and container labels. Treat missing identity as explicit uncertainty. The triage policy distinguishes investigate from observe-only, with a reason for known NAS capacity alerts. Replace name-specific CEL exclusions only after migration validation. Opting out of AI does not hide the alert; different NAS symptoms can still justify investigation.</p>
 
-<p>The repair chain should be recorded with enough detail to reproduce it: canonical source, scoped installer, publication step, wrapper deployment, pipeline result, Helm readiness, image digest, and absence of unwanted constraints. Model and toolset hashes should be unchanged when only the wrapper or prompt is being tested.</p>
+<h3>Lifecycle</h3>
 
-<h3>Ownership: who owns what</h3>
+<p>Current correlation uses alert name plus boundary, a 12-hour window, and <code>resolveOn: never</code>, with cron closure. The proposed persistent gate admits initial impact, material new impact, and verified recurrence. It coalesces pending work and requires continuous explicit recovery. Silence, missing data, and stale samples are not recovery. A running slot is not freed on timeout; the real execution is reconciled. Prior successful investigations are seeded before enabling the gate. The system never runs both automatic dispatch paths at the same time.</p>
 
-<p>One of the biggest failure modes in homelab AI tooling is unclear ownership. If every repository can change prompts, skills, workflows, and runtime behavior, the system becomes a pile of overlapping assumptions. A better design assigns responsibility deliberately.</p>
+<h3>Skills and dependencies</h3>
 
-<ul>
-  <li><strong>Alerting repository:</strong> production Grafana rules, labels, and eligibility validation.</li>
-  <li><strong>Management repository:</strong> Keep/Robusta GitOps, encrypted workflows, prompt archives, rendered skills, lifecycle code, and experiments.</li>
-  <li><strong>Workspace configuration:</strong> canonical harness-agnostic skills and scoped installation.</li>
-  <li><strong>Image repository:</strong> CI-built, digest-pinned Holmes derivative and build tests.</li>
-  <li><strong>Model runtime:</strong> existing model runtime and control, held constant during comparisons.</li>
-  <li><strong>Planning repository:</strong> cross-repository design, not duplicate deployment manifests.</li>
-</ul>
-
-<p>Operational documentation should live where the system is operated, not scattered across unreachable notes. The image build guide should live with the image repository. This ownership model is not bureaucratic; it is what makes the system debuggable. When an answer is bad, you need to know whether the problem came from alert identity, prompt behavior, skill content, wrapper constraints, model runtime, or missing evidence.</p>
-
-<h3>Target design: identity and eligibility</h3>
-
-<p>The target design separates three things that are often accidentally merged: stable source/rule/boundary identity, affected subjects, and display titles. That separation is the foundation for better triage.</p>
-
-<p>Alerts should carry structured context rather than serializing a database into an incident name. Real cluster, namespace, service, and container labels should be preserved. Missing identity should be treated as explicit uncertainty, not as permission to pick the busiest host and hope for the best.</p>
-
-<p>The prepared triage policy distinguishes <em>investigate</em> from <em>observe-only</em>, with a reason for known NAS capacity alerts. Name-specific CEL exclusions should be replaced only after migration validation. Opting out of AI does not hide the alert; different NAS symptoms can still justify investigation.</p>
-
-<p>This is a small idea with a large payoff. If the system knows what an alert is, what it affects, and what it is allowed to do, then it can make better decisions about whether to investigate, join an existing incident, or simply observe.</p>
-
-<h3>Target design: lifecycle</h3>
-
-<p>Lifecycle is where triage systems either become calm or become noisy. The current correlation uses alert name plus boundary, a 12-hour window, and <code>resolveOn: never</code>, with cron jobs providing closure. Shortening closure alone can increase new incidents and repeated AI calls, so the proposed design is more careful.</p>
-
-<p>The proposed persistent gate admits initial impact, material new impact, and verified recurrence. It coalesces pending work and requires continuous explicit recovery. Silence, missing data, and stale samples are not recovery. A running slot should not be freed on timeout; the real execution should be reconciled. Prior successful investigations should be seeded before enabling the gate. And the system should never run both automatic dispatch paths at the same time.</p>
-
-<p>That last rule is especially important. If two dispatch paths can fire, the system can create duplicate incidents, duplicate AI calls, and duplicate “investigations” that are really the same evidence being interpreted twice. A calm triage system needs one authoritative path.</p>
-
-<h3>Target design: skills and dependencies</h3>
-
-<p>The universal prompt should remain concise: scope, evidence, and response rules. Skills should describe system locations, label semantics, safe tools, and helpful diagnostic procedures. They should not contain predetermined diagnoses. A skill per alert is not required.</p>
-
-<p>The full environment reference should be preserved, and changes should be measured before replacing it. This is a practical homelab lesson: the most valuable skill is often the one that tells the model where to look, how to read labels, and which tools are safe to use. It is not the one that tells the model what the answer must be.</p>
-
-<p>Application YAML should declare stable service IDs, ownership, hosting, evidence selectors, and explicit dependencies. The schema, location, freshness checks, and initial inventory still need to be designed and tested. DNS, NFS, and network causality require an actual link, not co-location or timing alone. Individual symptoms should remain visible.</p>
-
-<p>This dependency-aware approach should run alongside the current correlation first. That is the safe way to prove it works: compare the new dependency view against the existing grouping before making it the primary source of truth.</p>
+<p>The universal prompt stays concise: scope, evidence, and response rules. Skills describe system locations, label semantics, safe tools, and diagnostic procedures. They do not contain predetermined diagnoses. A skill per alert is not required. Preserve the full environment reference and measure changes before replacing it. Application YAML declares stable service IDs, ownership, hosting, evidence selectors, and explicit dependencies. The schema, location, freshness checks, and initial inventory still need design and testing. DNS, NFS, and network causality require an actual link, not co-location or timing alone. Individual symptoms remain visible. Run the dependency-aware view alongside the current correlation before making it primary.</p>
 
 <h3>Completion sequence</h3>
 
-<ol>
-  <li>Review one post-repair run, then historically good GitLab, Kubernetes, datasource, and recurring-incident cases. Record exact versions, evidence, time, tool errors, and tokens. Live reruns are not frozen-input A/B tests.</li>
-  <li>Verify Grafana firing/resolved delivery into Keep, including silence, all-clear, late events, and incomplete reads. A provider annotation-history failure does not prove resolved push delivery cannot work.</li>
-  <li>Finish history seeding, non-Grafana normalization, durable dispatch, ambiguous-request handling, backups, and health metrics for admission.</li>
-  <li>Shadow-test label and identity migration, then cut over through GitOps. Prove initial triage, no short-flap repeats, and genuine recovery/recurrence.</li>
-  <li>Implement the dependency inventory beside existing grouping. If needed, compare Pi/Holmes with equivalent model, settings, and evidence. Replacing the harness is not yet a proven requirement.</li>
-  <li>Observe 24–48 hours after cutover and review missed or noisy cases. This is a proposed acceptance window, not completed evidence or a promised deadline.</li>
-</ol>
+<p>1. Review one post-repair run, then historically good GitLab, Kubernetes, datasource, and recurring-incident cases. Record exact versions, evidence, time, tool errors, and tokens. Live reruns are not frozen-input A/B tests.</p>
 
-<p>The sequence is intentionally conservative. It favors evidence over enthusiasm. It asks the system to prove that it can handle the boring cases before it is allowed to claim that it can handle the interesting ones.</p>
+<p>2. Verify Grafana firing/resolved delivery into Keep, including silence, all-clear, late events, and incomplete reads. A provider annotation-history failure does not prove resolved push delivery cannot work.</p>
+
+<p>3. Finish history seeding, non-Grafana normalization, durable dispatch, ambiguous-request handling, backups, and health metrics for admission.</p>
+
+<p>4. Shadow-test label and identity migration, then cut over through GitOps. Prove initial triage, no short-flap repeats, and genuine recovery/recurrence.</p>
+
+<p>5. Implement the dependency inventory beside existing grouping. If needed, compare Pi/Holmes with equivalent model, settings, and evidence. Replacing the harness is not yet a proven requirement.</p>
+
+<p>6. Observe 24-48 hours after cutover and review missed or noisy cases. This is a proposed acceptance window, not completed evidence or a promised deadline.</p>
 
 <h3>Verification and unmanaged state</h3>
 
-<p>Verification should include unit tests, provenance checks, and execution reports. At rollout, tests should pass, but fixture success is not diagnosis quality. Versions should be recorded for the alerting stack, workflow engine, and Holmes derivative, with the image digest pinned in GitOps. Official sources are the upstream Helm charts and HolmesGPT.</p>
+<p>Verification includes unit tests, provenance checks, and execution reports. At rollout, tests should pass, but fixture success is not diagnosis quality. Record versions for the alerting stack, workflow engine, and Holmes derivative, and pin the image digest in GitOps. Official sources are the upstream Helm charts and HolmesGPT.</p>
 
-<p>Not in Git: plaintext credentials, private keys, raw model conversations, live incident history, and future ledger/WAL/backups. Encrypted secrets, canonical skills, prompt history, and reviewed experiment records can be in Git.</p>
-
-<h3>Why this matters for a homelab</h3>
-
-<p>A homelab AI triage system is not just a toy. It is a control plane for understanding your own infrastructure. If it is noisy, it trains you to ignore it. If it is opaque, it becomes a black box you cannot trust. If it is honest about what it knows, what it does not know, and what evidence it used, it becomes a genuinely useful part of the stack.</p>
-
-<p>The design in this post is not about making the AI sound smarter. It is about making the system more reliable: preserve the working path, fix the regressions, keep ownership clear, make identity explicit, make lifecycle safe, and let dependencies be declared rather than guessed. That is the kind of engineering that turns a clever experiment into something you can actually live with.</p>
+<p>Not in Git: plaintext credentials, private keys, raw model conversations, live incident history, and future ledger/WAL/backups. In Git: encrypted secrets, canonical skills, prompt history, and reviewed experiment records.</p>
 <!-- END OF CONTENT -->
       
       <!-- Post Navigation -->
