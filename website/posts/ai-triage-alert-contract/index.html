@@ -89,9 +89,11 @@
       <!-- EDIT: Add your content here -->
 <h2>AI triage: implementation guide</h2>
 
+<p><strong>Reference:</strong> AI triage deep dive — implementation guide.</p>
+
 <h3>Goal</h3>
 
-<p>Make AI-assisted incident triage predictable and auditable. Alerts enter with stable identity, policy decides investigate or observe, flaps do not repeat investigations, evidence is explicit, and durable runtime state stays out of Git.</p>
+<p>Make AI incident triage predictable and auditable. Alerts keep stable identity, policy chooses investigate or observe, flaps do not repeat work, evidence is explicit, and runtime state stays out of Git.</p>
 
 <h3>Current state</h3>
 
@@ -102,7 +104,7 @@
 
 Tested:
 - Shorter versioned prompt; previous text archived
-- Full environment skill preserved, not replaced by partial overlay
+- Full environment skill preserved
 - Holmes wrapper without mandatory narration, verified in CI and rollout
 - Resolver safety: suppressed firing alerts retained, malformed responses fail closed
 - Core and read-only shadow admission/deduplication
@@ -116,43 +118,113 @@ Required before cutover:
 
 <h3>Evidence</h3>
 
-<p>Separate regressions, prompt behavior, tooling constraints, and evidence gaps. A GitOps overlay regression can prove one cause, not all poor answers. Removing wrapper narration removes a constraint; it does not make the model smarter. Evaluate prompt, tool, model, and evidence using execution time, tool time, token usage, and repeated context. Do not overinterpret CPU samples. Use known trace paths, such as project to branch to pipeline to failed job, as regression tests. Record the repair chain: canonical source, scoped installer, publication step, wrapper deployment, pipeline result, Helm readiness, image digest, and absence of unwanted constraints. Keep model and toolset hashes unchanged when testing only the wrapper or prompt.</p>
+<pre><code>Evidence:
+- Separate regressions, prompt behavior, tooling constraints, and evidence gaps
+- A GitOps overlay regression proves one cause, not all poor answers
+- Removing wrapper narration removes a constraint; it does not make the model smarter
+- Compare prompt, tool, model, and evidence using execution time, tool time, tokens, and repeated context
+- Do not overinterpret CPU samples
+- Use known trace paths, such as project to branch to pipeline to failed job, as regression tests
+- Record the repair chain: canonical source, scoped installer, publication step, wrapper deployment, pipeline result, Helm readiness, image digest, and absence of unwanted constraints
+- Keep model and toolset hashes unchanged when testing only the wrapper or prompt
+</code></pre>
 
 <h3>Ownership</h3>
 
-<p>The alerting repository owns production Grafana rules, labels, and eligibility validation. The management repository owns Keep/Robusta GitOps, encrypted workflows, prompt archives, rendered skills, lifecycle code, and experiments. Workspace configuration owns canonical harness-agnostic skills and scoped installation. The image repository owns the CI-built, digest-pinned Holmes derivative and build tests. The model runtime stays constant during comparisons. The planning repository owns cross-repository design, not duplicate deployment manifests. Operational documentation lives where the system is operated; the image build guide lives with the image repository.</p>
+<pre><code>Alerting repo:
+- Production Grafana rules, labels, eligibility validation
+
+Management repo:
+- Keep/Robusta GitOps, encrypted workflows, prompt archives, rendered skills, lifecycle code, experiments
+
+Workspace config:
+- Canonical harness-agnostic skills, scoped installation
+
+Image repo:
+- CI-built, digest-pinned Holmes derivative, build tests
+
+Planning repo:
+- Cross-repository design, not duplicate deployment manifests
+
+Docs:
+- Operational docs live where the system is operated
+- Image build guide lives with the image repo
+</code></pre>
 
 <h3>Identity and eligibility</h3>
 
-<p>Separate stable source/rule/boundary identity, affected subjects, and display titles. Preserve real cluster, namespace, service, and container labels. Treat missing identity as explicit uncertainty. The triage policy distinguishes investigate from observe-only, with a reason for known NAS capacity alerts. Replace name-specific CEL exclusions only after migration validation. Opting out of AI does not hide the alert; different NAS symptoms can still justify investigation.</p>
+<pre><code>Identity:
+- Separate stable source/rule/boundary identity, affected subjects, and display titles
+- Preserve real cluster, namespace, service, and container labels
+- Treat missing identity as explicit uncertainty
+
+Eligibility:
+- Policy distinguishes investigate from observe-only, with a reason for known NAS capacity alerts
+- Replace name-specific CEL exclusions only after migration validation
+- Opting out of AI does not hide the alert; different NAS symptoms can still justify investigation
+</code></pre>
 
 <h3>Lifecycle</h3>
 
-<p>Current correlation uses alert name plus boundary, a 12-hour window, and <code>resolveOn: never</code>, with cron closure. The proposed persistent gate admits initial impact, material new impact, and verified recurrence. It coalesces pending work and requires continuous explicit recovery. Silence, missing data, and stale samples are not recovery. A running slot is not freed on timeout; the real execution is reconciled. Prior successful investigations are seeded before enabling the gate. The system never runs both automatic dispatch paths at the same time.</p>
+<pre><code>Current:
+- Alert name + boundary, 12-hour window, resolveOn: never, cron closure
+
+Proposed gate:
+- Admits initial impact, material new impact, and verified recurrence
+- Coalesces pending work
+- Requires continuous explicit recovery; silence, missing data, and stale samples are not recovery
+- A running slot is not freed on timeout; the real execution is reconciled
+- Prior successful investigations are seeded before enabling the gate
+- The system never runs both automatic dispatch paths at the same time
+</code></pre>
 
 <h3>Skills and dependencies</h3>
 
-<p>The universal prompt stays concise: scope, evidence, and response rules. Skills describe system locations, label semantics, safe tools, and diagnostic procedures. They do not contain predetermined diagnoses. A skill per alert is not required. Preserve the full environment reference and measure changes before replacing it. Application YAML declares stable service IDs, ownership, hosting, evidence selectors, and explicit dependencies. The schema, location, freshness checks, and initial inventory still need design and testing. DNS, NFS, and network causality require an actual link, not co-location or timing alone. Individual symptoms remain visible. Run the dependency-aware view alongside the current correlation before making it primary.</p>
+<pre><code>Skills:
+- Universal prompt stays concise: scope, evidence, and response rules
+- Skills describe system locations, label semantics, safe tools, and diagnostic procedures
+- Skills do not contain predetermined diagnoses
+- A skill per alert is not required
+- Preserve the full environment reference and measure changes before replacing it
+
+Dependencies:
+- Application YAML declares stable service IDs, ownership, hosting, evidence selectors, and explicit dependencies
+- Schema, location, freshness checks, and initial inventory still need design and testing
+- DNS, NFS, and network causality require an actual link, not co-location or timing alone
+- Individual symptoms remain visible
+- Run the dependency-aware view alongside the current correlation before making it primary
+</code></pre>
 
 <h3>Completion sequence</h3>
 
-<p>1. Review one post-repair run, then historically good GitLab, Kubernetes, datasource, and recurring-incident cases. Record exact versions, evidence, time, tool errors, and tokens. Live reruns are not frozen-input A/B tests.</p>
+<pre><code>1. Review one post-repair run, then historically good GitLab, Kubernetes, datasource, and recurring-incident cases. Record exact versions, evidence, time, tool errors, and tokens. Live reruns are not frozen-input A/B tests.
 
-<p>2. Verify Grafana firing/resolved delivery into Keep, including silence, all-clear, late events, and incomplete reads. A provider annotation-history failure does not prove resolved push delivery cannot work.</p>
+2. Verify Grafana firing/resolved delivery into Keep, including silence, all-clear, late events, and incomplete reads. A provider annotation-history failure does not prove resolved push delivery cannot work.
 
-<p>3. Finish history seeding, non-Grafana normalization, durable dispatch, ambiguous-request handling, backups, and health metrics for admission.</p>
+3. Finish history seeding, non-Grafana normalization, durable dispatch, ambiguous-request handling, backups, and health metrics for admission.
 
-<p>4. Shadow-test label and identity migration, then cut over through GitOps. Prove initial triage, no short-flap repeats, and genuine recovery/recurrence.</p>
+4. Shadow-test label and identity migration, then cut over through GitOps. Prove initial triage, no short-flap repeats, and genuine recovery/recurrence.
 
-<p>5. Implement the dependency inventory beside existing grouping. If needed, compare Pi/Holmes with equivalent model, settings, and evidence. Replacing the harness is not yet a proven requirement.</p>
+5. Implement the dependency inventory beside existing grouping. If needed, compare Pi/Holmes with equivalent model, settings, and evidence. Replacing the harness is not yet a proven requirement.
 
-<p>6. Observe 24-48 hours after cutover and review missed or noisy cases. This is a proposed acceptance window, not completed evidence or a promised deadline.</p>
+6. Observe 24-48 hours after cutover and review missed or noisy cases. This is a proposed acceptance window, not completed evidence or a promised deadline.
+</code></pre>
 
 <h3>Verification and unmanaged state</h3>
 
-<p>Verification includes unit tests, provenance checks, and execution reports. At rollout, tests should pass, but fixture success is not diagnosis quality. Record versions for the alerting stack, workflow engine, and Holmes derivative, and pin the image digest in GitOps. Official sources are the upstream Helm charts and HolmesGPT.</p>
+<pre><code>Verification:
+- Unit tests, provenance checks, and execution reports
+- At rollout, tests should pass, but fixture success is not diagnosis quality
+- Record versions for the alerting stack, workflow engine, and Holmes derivative
+- Pin the image digest in GitOps
+- Official sources are the upstream Helm charts and HolmesGPT
 
-<p>Not in Git: plaintext credentials, private keys, raw model conversations, live incident history, and future ledger/WAL/backups. In Git: encrypted secrets, canonical skills, prompt history, and reviewed experiment records.</p>
+Not in Git:
+- Plaintext credentials, private keys, raw model conversations, live incident history, future ledger/WAL/backups
+
+In Git:
+- Encrypted secrets, canonical skills, prompt history, reviewed experiment records
+</code></pre>
 <!-- END OF CONTENT -->
       
       <!-- Post Navigation -->
