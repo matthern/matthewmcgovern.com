@@ -1,5 +1,12 @@
 [
   {
+    "slug": "aiops-alerting",
+    "title": "Wiring AI Alert Triage Across Two Kubernetes Clusters",
+    "date": "September 27, 2026",
+    "author": "Matthew McGovern",
+    "excerpt": "Keep correlates Grafana and Zabbix alerts into incidents and a local LLM investigates each one, while Pushover still pages me directly. The hard part was the label contract between three systems, not the model."
+  },
+  {
     "slug": "signal-pi-bridge",
     "title": "A Signal Bridge for My Coding Agent",
     "date": "September 26, 2026",
