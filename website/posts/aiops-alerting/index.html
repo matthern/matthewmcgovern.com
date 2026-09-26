@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- EDIT: Change the title -->
-  <title>Wiring AI Alert Triage Across Two Kubernetes Clusters - Matthew McGovern</title>
+  <title>Wiring AI Alert Triage Across My Whole Homelab - Matthew McGovern</title>
   <!-- EDIT: Change the description -->
-  <meta name="description" content="Keep correlates Grafana and Zabbix alerts into incidents and a local LLM investigates each one, while Pushover still pages me directly. The hard part was the label contract between three systems, not the model.">
+  <meta name="description" content="Every alert the homelab raises — two Kubernetes clusters, the VMs, the docker hosts, the storage — gets correlated into an incident by Keep and investigated by a local LLM. Pushover still pages me directly.">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,9 +72,9 @@
   <section class="post-header">
     <div class="container container--narrow">
       <!-- EDIT: Change the title -->
-      <h1 class="post-header__title">Wiring AI Alert Triage Across Two Kubernetes Clusters</h1>
+      <h1 class="post-header__title">Wiring AI Alert Triage Across My Whole Homelab</h1>
       <!-- EDIT: Change the excerpt -->
-      <p class="post-header__excerpt">Keep correlates Grafana and Zabbix alerts into incidents and a local LLM investigates each one, while Pushover still pages me directly. The hard part was the label contract between three systems, not the model.</p>
+      <p class="post-header__excerpt">Every alert the homelab raises — two Kubernetes clusters, the VMs, the docker hosts, the storage — gets correlated into an incident by Keep and investigated by a local LLM. Pushover still pages me directly.</p>
       <!-- EDIT: Change the date -->
       <p class="post-header__meta">
         <span>Matthew McGovern</span> · <span>September 27, 2026</span>
@@ -87,40 +87,46 @@
     <div class="container container--narrow">
       
       <!-- EDIT: Add your content here -->
-<div id="auto-excerpt">Keep correlates Grafana and Zabbix alerts into incidents and a local LLM investigates each one, while Pushover still pages me directly. The hard part was the label contract between three systems, not the model.</div>
 <h2>What it does</h2>
-<p>Every alert the homelab raises ends up as an incident with a written root-cause analysis: alerts produced on a production Kubernetes cluster (Grafana plus Zabbix) are consumed on a separate management cluster by Keep, which correlates them into incidents and hands each new one to HolmesGPT — a local 27B-parameter Qwen model on llama.cpp with read-only access to both clusters.</p>
-<p>The AI layer is additive: humans get Pushover straight from the producers, so a failure in the AI path never causes a missed page.</p>
+<p>Every alert my homelab raises ends up as an incident with a written root-cause analysis. Grafana rules watch the two Kubernetes clusters; Zabbix watches the rest of the estate — the Proxmox nodes and their VMs, the docker hosts, the storage. All of it lands in Keep, which correlates the alerts into incidents and hands each new one to HolmesGPT, backed by a local 27B Qwen model on llama.cpp with read-only access to both clusters and the monitoring APIs.</p>
+<p>I still get paged directly by Pushover, straight from the producers. The AI layer is additive: it can explain an incident, but it can't sit between an alert and my phone.</p>
 <h2>Why I built it</h2>
-<p>The estate spans two clusters and a dozen bare-metal hosts behind two alert systems, and "something is broken" was always the cheap part of an incident. The expensive part was the investigation — which failure domain, one fault or several, what the causal chain is. I wanted that automated, with one hard constraint: the AI never sits between an alert and the pager.</p>
+<p>The estate is too big to triage by hand, and "something is broken" is the cheap part of an incident. The expensive part is the investigation: which failure domain, one fault or several, what the causal chain is. I wanted that automated, with one hard constraint — the AI never sits in the paging path.</p>
 <h2>How it works</h2>
 <h3>A label contract, not a convention</h3>
 <p>Grouping is applied three times by systems that share no definition: PromQL decides which labels survive aggregation, Grafana which alerts become one notification, Keep which become one incident. Any layer grouping on a narrower key set silently undoes everything above it.</p>
-<p>Keep's correlation fingerprint fails closed: a missing grouping label does not fall back to a narrower grouping — it collapses into one shared bucket with every other incomplete alert. Adding <code>instance</code> merged all my Kubernetes alerts into one incident; adding <code>namespace</code> merged everything — fifteen unrelated alerts became one. Coverage over 175 real alerts: <code>alertname</code> 175/175, <code>instance</code> 89/175, <code>namespace</code> 65/175.</p>
-<p>So the label set became a contract enforced in CI: an audit of the 37 rules found 13 identity shapes and no label common to all, so every rule emits two labels built into the query — <code>target</code>, the subject that names the incident, and <code>boundary</code>, the failure domain: the single thing breaking that would account for every alert in it. Where a shared dependency fails across many subjects — backups, a certificate authority — the rules name the subsystem instead, so one fault is one incident, not one investigation per subject.</p>
+<p>Keep's correlation fingerprint fails closed: an alert missing a grouping label does not fall back to a narrower grouping — it collapses into one shared bucket with every other incomplete alert. Coverage over 175 real alerts: <code>alertname</code> 175/175, <code>instance</code> 89/175, <code>namespace</code> 65/175. Adding <code>instance</code> merged all my Kubernetes alerts into one incident; adding <code>namespace</code> merged everything — fifteen unrelated alerts became one.</p>
+<p>So the label set became a contract enforced in CI. An audit of the 37 rules found 13 identity shapes and no label common to all, so every rule builds two labels into its query: <code>target</code>, the subject that names the incident, and <code>boundary</code>, the failure domain — the single thing whose failure would account for every alert in it. Where a shared dependency fails across many subjects — backups, a certificate authority — the rules name the subsystem instead: one fault, one incident.</p>
 <h3>The incident lifecycle</h3>
-<p>Three systems hold an opinion about whether something is still broken, and they do not talk back to each other. Grafana is the only source of truth for alert state; Keep holds incidents — groupings of notifications — and nothing done to one changes whether the alert is firing. There is a fourth state that surprises people: <em>expired</em>, which never appears in the UI; it decides whether a new alert reuses an existing incident or creates one.</p>
-<p>Resolving everything in Keep does nothing: the alerts still fire, the next repeat finds the resolved — therefore expired — incident, creates a new one, and incident creation is the AI trigger. Manual resolution is worse than cosmetic — it guarantees a fresh round of investigations. To stop an alert, fix the condition or silence it upstream.</p>
-<p>Closure is owned by one scheduled job that closes an incident only when every linked alert has stayed resolved for a fixed delay. And the correlation window must sit <em>below</em> the notification repeat interval: at the original one hour against a 24-hour repeat, every reminder created a new incident — eight open incidents for one ongoing fault; widen it past the repeat and a still-broken condition stops producing creation events entirely, investigated once, then silent. Twelve hours against a 24-hour repeat is the working point: a daily re-look, with the previous conclusion carried forward so the repeat confirms or revises instead of restarting.</p>
+<p>Grafana is the only source of truth for alert state; Keep holds incidents — groupings of notifications — and nothing done to one changes whether the alert is firing. The state that surprises people is <em>expired</em>: it never appears in the UI. It decides whether a new alert reuses an incident or creates one — and incident creation is the AI trigger.</p>
+<p>Resolving everything in Keep does nothing: the alerts still fire, the next repeat finds the resolved — therefore expired — incident, creates a new one, and guarantees a fresh round of investigations. To stop an alert, fix the condition or silence it upstream. Closure is owned by one scheduled job that closes an incident only when every linked alert has stayed resolved for a fixed delay.</p>
+<p>The correlation window has to be tuned against the notification repeat interval. At the original one hour against a 24-hour repeat, every reminder created a new incident — eight open incidents for one ongoing backup fault, each re-investigated. Widening past the repeat meant a persisting fault was investigated once, ever, and then Keep went quiet about it. The working point is twelve hours against the 24-hour repeat: a daily re-look, with the previous conclusion carried forward so each repeat confirms or revises instead of starting cold.</p>
 <h2>The failure that proved the design</h2>
-<p>Eight containers were restarting across both clusters. Notification grouping omitted cluster, so they arrived as one notification and correlated into one incident. The model reasoned correctly over that merged input and produced a confident story: a memory leak on a management-cluster node, with a production database listed as collateral damage. A node exhausting memory on one cluster cannot restart a pod on another; the production database's fault was unrelated and six weeks old. The merge gave a real failure a plausible, confident, wrong explanation — the kind nobody re-opens.</p>
+<p>Eight containers were restarting across both clusters. Notification grouping omitted the cluster, so they arrived as one notification and correlated into one incident. The model reasoned correctly over that merged input and produced a confident story: a memory leak on a management-cluster node, with a production database listed as collateral damage. A node exhausting memory on one cluster cannot restart a pod on another; the database's fault was unrelated and six weeks old. The merge gave a real failure a plausible, confident, wrong explanation.</p>
 <p>The model was not at fault. The defect was one layer upstream, in the label contract.</p>
 <h2>Results</h2>
 <ul>
-<li>37 Grafana rules in 17 groups, every one label-validated in CI; Zabbix from both clusters feeds the same pipeline.</li>
-<li>A flapping media-server container that produced ten investigations in three hours now produces one, investigated once.</li>
-<li>A single ongoing fault that produced eight open incidents in 26 hours now produces one per day, each confirming the previous analysis.</li>
+<li>37 Grafana rules in 17 groups, every one label-validated in CI; both Zabbix servers feed the same pipeline.</li>
+<li>A flapping media-server container produced ten investigations in three hours; now it produces one.</li>
+<li>A single ongoing fault that produced eight open incidents now produces one per day, each confirming the previous analysis.</li>
 <li>Every incident arrives with a written root-cause analysis — and every alert still pages me directly.</li>
 </ul>
 <h2>What I learned, and what's next</h2>
 <p>Every interesting failure — merged incidents, duplicate investigations, triage going silent — was a grouping or lifecycle problem one layer upstream. The sharp edges are real: the incident lookup is check-then-act with no lock, so alerts in the same second can still duplicate (three incidents, one second apart), and upstream dedup is blocked on a provider bug.</p>
-<p>Next: topology mapping so incidents carry their service dependencies, explainable correlation, and a serialized re-triage runtime moving to live dispatch.</p>
-<!-- END OF CONTENT -->
+<p>Next: topology mapping so incidents carry their service dependencies, explainable correlation, and hardening the serialized re-triage runtime that just moved to live dispatch.</p>
+      <!-- END OF CONTENT -->
       
       <!-- Post Navigation -->
-      <!-- EDIT: Update the prev/next links, or remove if not needed -->
-      
-      
+      <nav class="post-nav">
+        <a href="/posts/setup-jump-host-with-vpn-client/" class="post-nav__link">
+          <span class="post-nav__label">← Previous</span>
+          <span class="post-nav__title">Setup Jump Host with VPN Client</span>
+        </a>
+        <div class="post-nav__link" style="visibility: hidden;">
+          <!-- No next post -->
+        </div>
+      </nav>
+      <p class="post-nav__all"><a href="/blog/">← All posts</a></p>
     </div>
   </article>
 

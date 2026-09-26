@@ -498,6 +498,11 @@ a:hover {
   font-weight: 500;
 }
 
+.post-nav__all {
+  text-align: center;
+  margin-top: var(--spacing-md);
+}
+
 /* ---------- Footer ---------- */
 .footer {
   background: var(--color-bg-darker);

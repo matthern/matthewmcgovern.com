@@ -1,10 +1,10 @@
 [
   {
     "slug": "aiops-alerting",
-    "title": "Wiring AI Alert Triage Across Two Kubernetes Clusters",
+    "title": "Wiring AI Alert Triage Across My Whole Homelab",
     "date": "September 27, 2026",
     "author": "Matthew McGovern",
-    "excerpt": "Keep correlates Grafana and Zabbix alerts into incidents and a local LLM investigates each one, while Pushover still pages me directly. The hard part was the label contract between three systems, not the model."
+    "excerpt": "Every alert the homelab raises — two Kubernetes clusters, the VMs, the docker hosts, the storage — gets correlated into an incident by Keep and investigated by a local LLM. Pushover still pages me directly."
   },
   {
     "slug": "signal-pi-bridge",
