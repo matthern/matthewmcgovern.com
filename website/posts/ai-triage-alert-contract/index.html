@@ -87,15 +87,25 @@
     <div class="container container--narrow">
       
       <!-- EDIT: Add your content here -->
-<h2>AI triage: implementation guide</h2>
+<h2>Draft: <code>docs/planning/aiops_poc_plan.md</code></h2>
 
-<p><strong>Reference:</strong> AI triage deep dive — implementation guide.</p>
+<p><strong>Reference:</strong> AI triage deep dive — implementation guide. This draft narrows that guide into a bounded proof-of-concept plan for AI-assisted operations triage.</p>
 
-<h3>Goal</h3>
+<h3>Purpose</h3>
 
-<p>Make AI incident triage predictable and auditable. Alerts keep stable identity, policy chooses investigate or observe, flaps do not repeat work, evidence is explicit, and runtime state stays out of Git.</p>
+<p>Validate whether AI can improve alert triage in a predictable, auditable, and safe way. The POC keeps the proven Grafana to Keep to Holmes path, fixes evidence and ownership, and tests whether AI can reduce triage noise without automatic remediation or overpromising.</p>
 
-<h3>Current state</h3>
+<h3>Status and intent</h3>
+
+<pre><code>Status: draft v0.1
+Audience: infrastructure, SRE, platform, and security reviewers
+Goal: decide whether to move from shadow AI triage to assisted triage
+Non-goal: production self-healing, model training, or replacing on-call judgment
+</code></pre>
+
+<h3>Current baseline</h3>
+
+<p>The live path is Grafana to Keep to Holmes. Alert grouping currently uses alert name plus boundary, with <code>resolveOn: never</code> and time-based closure. The tested baseline includes a shorter versioned prompt, a preserved full environment skill, a Holmes wrapper without mandatory narration, resolver safety for suppressed firing alerts, and core/read-only shadow admission and deduplication.</p>
 
 <pre><code>Live:
 - Grafana -> Keep -> Holmes baseline
@@ -108,26 +118,84 @@ Tested:
 - Holmes wrapper without mandatory narration, verified in CI and rollout
 - Resolver safety: suppressed firing alerts retained, malformed responses fail closed
 - Core and read-only shadow admission/deduplication
-
-Required before cutover:
-- Post-repair answer comparison, not prompt-only comparison
-- Eligibility labels after migration validation
-- Live dispatcher and seeded ledger
-- Dependency grouping proven against current grouping
 </code></pre>
 
-<h3>Evidence</h3>
+<h3>POC objectives</h3>
 
-<pre><code>Evidence:
-- Separate regressions, prompt behavior, tooling constraints, and evidence gaps
-- A GitOps overlay regression proves one cause, not all poor answers
-- Removing wrapper narration removes a constraint; it does not make the model smarter
-- Compare prompt, tool, model, and evidence using execution time, tool time, tokens, and repeated context
-- Do not overinterpret CPU samples
-- Use known trace paths, such as project to branch to pipeline to failed job, as regression tests
-- Record the repair chain: canonical source, scoped installer, publication step, wrapper deployment, pipeline result, Helm readiness, image digest, and absence of unwanted constraints
-- Keep model and toolset hashes unchanged when testing only the wrapper or prompt
+<pre><code>1. Prove stable alert identity across source, rule, boundary, affected subjects, and display title.
+2. Produce auditable AI triage output with explicit evidence, versions, and tool results.
+3. Reduce duplicate investigations for flapping or recurring alerts.
+4. Compare AI-assisted triage against the current baseline using frozen cases.
+5. Establish safe rollout gates before any automatic dispatch is enabled.
 </code></pre>
+
+<h3>Scope</h3>
+
+<pre><code>In scope:
+- Grafana alert delivery into Keep
+- Keep normalization, eligibility, deduplication, and shadow admission
+- HolmesGPT read-only investigation
+- Evidence capture for metrics, logs, Kubernetes objects, and selected traces
+- Evaluation harness for frozen incident cases
+- GitOps rollout and rollback plan
+
+Out of scope:
+- Automatic remediation or self-healing
+- Production write actions
+- Full AIOps platform replacement
+- Model training or fine-tuning
+- Replacing human on-call judgment
+</code></pre>
+
+<h3>Success criteria</h3>
+
+<pre><code>Identity:
+- At least 90% of selected alerts have stable source/rule/boundary identity
+- Missing identity is recorded as explicit uncertainty, not guessed
+
+Evidence:
+- Every AI triage report includes alert identity, evidence links, tool versions, prompt version, and model/toolset hash
+- Reports distinguish confirmed evidence from inference
+
+Deduplication:
+- No duplicate Holmes runs for the same incident within the POC window
+- Flapping alerts coalesce into one pending investigation until material new impact appears
+
+Safety:
+- All Holmes tools remain read-only
+- Malformed responses fail closed
+- Suppressed firing alerts are retained and visible
+- No two automatic dispatch paths run at the same time
+
+Evaluation:
+- The POC produces a comparison report for at least five frozen cases
+- The report includes answer quality, evidence completeness, execution time, tool time, tokens, and false-positive rate
+</code></pre>
+
+<h3>Architecture</h3>
+
+<pre><code>Grafana Alerting
+  -> Keep
+       - normalize alert
+       - assign stable identity
+       - apply eligibility policy
+       - deduplicate and coalesce
+  -> Dispatcher
+       - shadow mode first
+       - live mode only after gate approval
+  -> HolmesGPT
+       - read-only investigation
+       - versioned prompt and skills
+  -> Evidence store
+       - alert metadata
+       - tool output
+       - execution report
+  -> Review surface
+       - dashboard or report
+       - human approval for assisted triage
+</code></pre>
+
+<p>The POC should not change the proven path before the shadow comparison is complete. New components are added as gates around the existing path, not as a replacement for it.</p>
 
 <h3>Ownership</h3>
 
@@ -159,71 +227,208 @@ Docs:
 - Treat missing identity as explicit uncertainty
 
 Eligibility:
-- Policy distinguishes investigate from observe-only, with a reason for known NAS capacity alerts
+- Policy distinguishes investigate from observe-only
+- Known NAS capacity alerts can be observe-only with a recorded reason
 - Replace name-specific CEL exclusions only after migration validation
-- Opting out of AI does not hide the alert; different NAS symptoms can still justify investigation
+- Opting out of AI does not hide the alert
+- Different NAS symptoms can still justify investigation
 </code></pre>
 
-<h3>Lifecycle</h3>
+<h3>Lifecycle gate</h3>
 
 <pre><code>Current:
-- Alert name + boundary, 12-hour window, resolveOn: never, cron closure
+- Alert name + boundary
+- 12-hour window
+- resolveOn: never
+- cron closure
 
 Proposed gate:
 - Admits initial impact, material new impact, and verified recurrence
 - Coalesces pending work
-- Requires continuous explicit recovery; silence, missing data, and stale samples are not recovery
+- Requires continuous explicit recovery
+- Silence, missing data, and stale samples are not recovery
 - A running slot is not freed on timeout; the real execution is reconciled
 - Prior successful investigations are seeded before enabling the gate
 - The system never runs both automatic dispatch paths at the same time
 </code></pre>
 
-<h3>Skills and dependencies</h3>
+<h3>AI design</h3>
 
-<pre><code>Skills:
+<pre><code>Prompt:
 - Universal prompt stays concise: scope, evidence, and response rules
+- Prompt changes are versioned and archived
+
+Skills:
 - Skills describe system locations, label semantics, safe tools, and diagnostic procedures
 - Skills do not contain predetermined diagnoses
 - A skill per alert is not required
 - Preserve the full environment reference and measure changes before replacing it
 
-Dependencies:
-- Application YAML declares stable service IDs, ownership, hosting, evidence selectors, and explicit dependencies
+Model and tooling:
+- Keep model and toolset hashes unchanged when testing only the wrapper or prompt
+- Record execution time, tool time, tokens, and repeated context
+- Do not overinterpret CPU samples
+</code></pre>
+
+<h3>Evidence requirements</h3>
+
+<pre><code>Required evidence:
+- Alert metadata and stable identity
+- Grafana firing/resolved delivery status
+- Keep normalization result
+- Eligibility decision and reason
+- Holmes execution report
+- Tool output references
+- Prompt, skill, model, and image versions
+
+Evidence quality rules:
+- Separate regressions, prompt behavior, tooling constraints, and evidence gaps
+- A GitOps overlay regression proves one cause, not all poor answers
+- Removing wrapper narration removes a constraint; it does not make the model smarter
+- Use known trace paths, such as project to branch to pipeline to failed job, as regression tests
+- Record the repair chain: canonical source, scoped installer, publication step, wrapper deployment, pipeline result, Helm readiness, image digest, and absence of unwanted constraints
+</code></pre>
+
+<h3>Dependency-aware investigation</h3>
+
+<pre><code>Application YAML:
+- Stable service IDs
+- Ownership
+- Hosting
+- Evidence selectors
+- Explicit dependencies
+
+Validation:
 - Schema, location, freshness checks, and initial inventory still need design and testing
 - DNS, NFS, and network causality require an actual link, not co-location or timing alone
 - Individual symptoms remain visible
 - Run the dependency-aware view alongside the current correlation before making it primary
 </code></pre>
 
-<h3>Completion sequence</h3>
+<h3>Evaluation plan</h3>
 
-<pre><code>1. Review one post-repair run, then historically good GitLab, Kubernetes, datasource, and recurring-incident cases. Record exact versions, evidence, time, tool errors, and tokens. Live reruns are not frozen-input A/B tests.
+<pre><code>Case set:
+- One post-repair run
+- Historically good GitLab cases
+- Kubernetes cases
+- Datasource cases
+- Recurring-incident cases
+- NAS capacity cases
+- Flapping alert cases
 
-2. Verify Grafana firing/resolved delivery into Keep, including silence, all-clear, late events, and incomplete reads. A provider annotation-history failure does not prove resolved push delivery cannot work.
-
-3. Finish history seeding, non-Grafana normalization, durable dispatch, ambiguous-request handling, backups, and health metrics for admission.
-
-4. Shadow-test label and identity migration, then cut over through GitOps. Prove initial triage, no short-flap repeats, and genuine recovery/recurrence.
-
-5. Implement the dependency inventory beside existing grouping. If needed, compare Pi/Holmes with equivalent model, settings, and evidence. Replacing the harness is not yet a proven requirement.
-
-6. Observe 24-48 hours after cutover and review missed or noisy cases. This is a proposed acceptance window, not completed evidence or a promised deadline.
+Method:
+- Freeze inputs where possible
+- Run baseline and AI shadow with the same evidence
+- Compare answer quality, evidence completeness, execution time, tool time, tokens, and false-positive rate
+- Live reruns are not frozen-input A/B tests
+- Review post-repair answer comparison, not prompt-only comparison
 </code></pre>
 
-<h3>Verification and unmanaged state</h3>
+<h3>Safety and guardrails</h3>
 
-<pre><code>Verification:
-- Unit tests, provenance checks, and execution reports
-- At rollout, tests should pass, but fixture success is not diagnosis quality
-- Record versions for the alerting stack, workflow engine, and Holmes derivative
+<pre><code>Runtime safety:
+- Read-only Holmes tools only
+- Fail closed on malformed responses
+- Suppressed firing alerts retained
+- No simultaneous automatic dispatch paths
+- Running slots are reconciled, not silently freed
+
+Secrets and state:
+- Plaintext credentials, private keys, raw model conversations, live incident history, future ledger/WAL/backups are not in Git
+- Encrypted secrets, canonical skills, prompt history, and reviewed experiment records are in Git
 - Pin the image digest in GitOps
 - Official sources are the upstream Helm charts and HolmesGPT
+</code></pre>
 
-Not in Git:
-- Plaintext credentials, private keys, raw model conversations, live incident history, future ledger/WAL/backups
+<h3>Rollout phases</h3>
 
-In Git:
-- Encrypted secrets, canonical skills, prompt history, reviewed experiment records
+<pre><code>Phase 0: Baseline
+- Inventory current alerts, grouping, and Holmes behavior
+- Record versions and evidence gaps
+
+Phase 1: Shadow triage
+- Run AI triage without user-visible dispatch
+- Validate identity, eligibility, deduplication, and evidence capture
+
+Phase 2: Assisted triage
+- Present AI triage to operators with evidence and confidence
+- Require human approval before action
+
+Phase 3: Limited automatic dispatch
+- Enable only for eligible, low-risk, high-confidence alerts
+- Keep observe-only alerts visible
+- Continue shadow comparison for new alert classes
+</code></pre>
+
+<h3>Timeline</h3>
+
+<pre><code>Week 1:
+- Confirm scope, owners, and success criteria
+- Complete baseline inventory
+- Verify Grafana firing/resolved delivery into Keep
+
+Week 2:
+- Implement shadow dispatcher, durable dispatch, and ledger seeding
+- Add non-Grafana normalization and ambiguous-request handling
+- Add backups and health metrics for admission
+
+Week 3:
+- Run frozen case evaluation
+- Review missed or noisy cases
+- Validate dependency-aware view alongside current correlation
+
+Week 4:
+- Cut over through GitOps if gates pass
+- Observe 24-48 hours
+- Produce decision memo for assisted or automatic triage
+</code></pre>
+
+<h3>Risks and mitigations</h3>
+
+<pre><code>Risk: prompt-only changes are mistaken for model improvement
+Mitigation: pin model, toolset, prompt, skill, and image versions; compare post-repair runs
+
+Risk: resolved events are missing or delayed
+Mitigation: verify Grafana to Keep delivery, including silence, all-clear, late events, and incomplete reads
+
+Risk: dependency grouping creates false causality
+Mitigation: require actual links for DNS, NFS, and network causality; keep individual symptoms visible
+
+Risk: AI noise increases operator fatigue
+Mitigation: eligibility policy, observe-only classification, deduplication, and 24-48 hour observation window
+
+Risk: runtime state leaks into Git
+Mitigation: keep ledger, WAL, backups, raw conversations, and live incident history out of Git
+</code></pre>
+
+<h3>Deliverables</h3>
+
+<pre><code>- docs/planning/aiops_poc_plan.md
+- POC runbook
+- Evaluation harness and frozen case set
+- Shadow dispatcher and ledger design
+- GitOps rollout and rollback plan
+- Decision memo with evidence and next-step recommendation
+</code></pre>
+
+<h3>Open questions</h3>
+
+<pre><code>- Which alert classes are eligible for automatic dispatch after the POC?
+- What is the minimum evidence required to mark recovery?
+- How should prior successful investigations be seeded?
+- Should the dependency-aware view remain shadow-only for one additional cycle?
+- What cost and token thresholds should trigger review?
+</code></pre>
+
+<h3>Next steps</h3>
+
+<pre><code>1. Approve scope, success criteria, and owners.
+2. Verify Grafana firing/resolved delivery into Keep.
+3. Finish history seeding, non-Grafana normalization, durable dispatch, ambiguous-request handling, backups, and health metrics.
+4. Shadow-test label and identity migration.
+5. Run the frozen case evaluation.
+6. Cut over through GitOps only after the gate passes.
+7. Observe 24-48 hours and review missed or noisy cases.
 </code></pre>
 <!-- END OF CONTENT -->
       
