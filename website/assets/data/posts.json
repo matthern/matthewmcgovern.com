@@ -1,5 +1,12 @@
 [
   {
+    "slug": "aiops_poc_plan",
+    "title": "Aiops_Poc_Plan",
+    "date": "September 26, 2026",
+    "author": "Matthew McGovern",
+    "excerpt": "This tutorial explains how to add a parallel AIOps layer to an existing monitoring and incident workflow to correlate alerts, investigate incidents with an LLM, and stage safe auto-remediation. It covers the architecture, volume controls, implementation steps, and evaluation criteria."
+  },
+  {
     "slug": "setup-jump-host-with-vpn-client",
     "title": "Setup Jump Host with VPN Client",
     "date": "November 24, 2023",

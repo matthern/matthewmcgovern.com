@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- EDIT: Change the title -->
+  <title>POST TITLE - Matthew McGovern</title>
+  <!-- EDIT: Change the description -->
+  <meta name="description" content="POST DESCRIPTION">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@400;500&family=Roboto+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  
+  <!-- Syntax Highlighting (for code blocks) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/images/favicon.png" sizes="32x32">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header__inner">
+        <div class="header__logo">
+          <a href="/">
+            <img src="/assets/images/logo.png" alt="Matthew McGovern">
+          </a>
+          <span class="header__title"><a href="/">MATTHEW MCGOVERN</a></span>
+        </div>
+        
+        <nav class="nav">
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+          
+          <ul class="nav__list">
+            <li><a href="/" class="nav__link">Home</a></li>
+            <li><a href="/#about" class="nav__link">About</a></li>
+            <li><a href="/#interests" class="nav__link">Interests</a></li>
+            <li><a href="/resume/" class="nav__link">Resume</a></li>
+            <li><a href="/blog/" class="nav__link nav__link--active">Posts</a></li>
+          </ul>
+          
+          <div class="social-links">
+            <a href="mailto:matt@matthewmcgovern.com" title="Email">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/matthewmcgovern-a844391a2" target="_blank" rel="noopener" title="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            </a>
+            <a href="https://github.com/matthern" target="_blank" rel="noopener" title="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+            </a>
+            <a href="https://hub.docker.com/u/matthewmjpm" target="_blank" rel="noopener" title="Docker Hub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.185-.186h-2.12a.186.186 0 0 0-.185.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288z"/></svg>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Header -->
+  <section class="post-header">
+    <div class="container container--narrow">
+      <!-- EDIT: Change the title -->
+      <h1 class="post-header__title">Aiops_Poc_Plan</h1>
+      <!-- EDIT: Change the excerpt -->
+      <p class="post-header__excerpt">This tutorial explains how to add a parallel AIOps layer to an existing monitoring and incident workflow to correlate alerts, investigate incidents with an LLM, and stage safe auto-remediation. It covers the architecture, volume controls, implementation steps, and evaluation criteria.</p>
+      <!-- EDIT: Change the date -->
+      <p class="post-header__meta">
+        <span>Matthew McGovern</span> · <span>September 26, 2026</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Post Content -->
+  <article class="post-content">
+    <div class="container container--narrow">
+      
+      <!-- EDIT: Add your content here -->
+<h1>Implementing an AIOps correlation and auto-remediation layer</h1>
+<p>Use this pattern when your existing monitoring system already pages an incident system, and you want to evaluate or deploy alert correlation, AI investigation, and remediation without changing the paging path.</p>
+<h2>Core architecture</h2>
+<p>Keep the existing alert path authoritative. For example, monitoring alerts continue to flow to the incident system as before. Add a parallel path that sends the same alerts to an AIOps platform. The platform normalizes alerts, correlates them into incidents, optionally investigates incidents with an LLM, and optionally executes remediation. The incident system remains the source of truth for paging.</p>
+<p>The end goal is auto-remediation, not just triage. The system should progress through three levels:</p>
+<ul>
+<li>Reduce noise: one problem produces one incident.</li>
+<li>Explain: each incident arrives with an investigated root cause.</li>
+<li>Heal: known-safe remediations execute automatically.</li>
+</ul>
+<p>The first two levels are prerequisites, not the destination.</p>
+<h2>Scope the pilot</h2>
+<p>Start with a small named host group. Include both Kubernetes workloads and virtual machines if your platform supports both. This controls alert volume and exposes platform coverage differences.</p>
+<p>If you are comparing a SaaS Kubernetes-native platform with a self-hosted multi-source platform, run both against the same pilot host group. A Kubernetes-native platform may only handle Kubernetes targets. A self-hosted platform may ingest multiple sources and run actions through providers such as SSH, shell, Python, or HTTP. The deciding factor is whether the platform can act on all target systems.</p>
+<p>If a platform cannot cover a target class, record that as a result rather than working around it.</p>
+<h2>Do not let alert volume reach the LLM</h2>
+<p>A failing host can generate a large number of alerts. If every alert triggers an LLM investigation, the LLM endpoint can become overloaded and investigations can fail.</p>
+<p>Use three controls, in order of reliance:</p>
+<ul>
+<li>Small pilot host group: use the fewest hosts that still produce useful data.</li>
+<li>Correlate before investigating: the platform must recognize a system-wide failure as one incident, not many alerts. Investigation triggers on the incident, never the raw alert.</li>
+<li>Cap concurrent investigations: use a hard ceiling so no configuration mistake can fan out. Verify this exists before connecting a live source.</li>
+</ul>
+<p>Verify all three controls before enabling AI investigation. Until then, the system can run correlation only, which is useful on its own and cannot touch the LLM.</p>
+<h2>Implementation steps</h2>
+<ol>
+<li>Stand up the platform with nothing connected. Verify that the UI loads, data persists across restarts, and secret material is not stored in the repository.</li>
+<li>Audit alert metadata. Determine which fields exist as tags or host groups, such as tenant, environment, site, service, or class.</li>
+<li>Connect only the pilot host groups. Verify that only pilot hosts appear and that the existing incident volume elsewhere is unchanged.</li>
+<li>Backfill mandatory labels before grouping. Query for pilot alerts missing a mandatory label and require zero results.</li>
+<li>Align grouping. Take a pilot host down and expect one incident, not many alerts.</li>
+<li>Enable AI investigation. Verify one real incident with a root cause correct enough to have saved time.</li>
+<li>Enable remediation. Verify that a remediation executes, is logged, and clears the alert without human action.</li>
+<li>Optionally forward enriched incidents to the incident system. The incident should arrive already carrying an analysis.</li>
+</ol>
+<h2>Labeling and grouping rules</h2>
+<p>Scope by host group, not trigger type. A host failure spans every trigger on the box.</p>
+<p>Label before grouping. If a grouping key is missing from an alert, correlation can collapse incomplete alerts into one shared bucket and merge unrelated incidents. Grouping before labeling produces exactly that failure.</p>
+<p>Use <code>host</code> as the primary grouping key. A host-wide failure should be one incident, which also keeps investigation volume bounded.</p>
+<p>Add a boundary key, such as tenant or environment, only once you confirm it exists on every alert. Adding a boundary key that is sometimes absent is worse than not adding it.</p>
+<h2>Staged remediation</h2>
+<p>The AI investigator should be read-only. Remediation is a separate mechanism that uses the investigation conclusion and earns autonomy in stages.</p>
+<ul>
+<li>Stage A: Suggest. The investigation proposes a fix, and a human runs it. This measures suggestion quality at zero risk.</li>
+<li>Stage B: One-click. The proposed action becomes a button. It is still human-approved.</li>
+<li>Stage C: Auto, narrow. One alert plus one action runs automatically. Examples include clearing a known log or image cache on disk-space pressure, or restarting a wedged kubelet or container runtime on a single-node Kubernetes host.</li>
+<li>Stage D: Auto, widened. Only actions that have run at stage C enough times to be boring are widened.</li>
+</ul>
+<p>Non-negotiables before any automatic action:</p>
+<ul>
+<li>Correctness first. Auto-remediation on a wrongly-correlated incident acts on the wrong host. Labeling and grouping are safety controls.</li>
+<li>Bounded blast radius. Scope every action by environment. Nothing automatic touches production until it is boring elsewhere.</li>
+<li>Audit trail. Record what ran, on what, why, and what happened.</li>
+<li>Off switch. Provide one control that stops all automatic action, and verify it before stage C.</li>
+</ul>
+<h2>Bring-your-own-LLM setup</h2>
+<p>Deploy the LLM integration at defaults and measure before tuning.</p>
+<pre><code>modelList:
+  &lt;name&gt;:
+    api_base: http://&lt;llm-gateway&gt;/v1
+    api_key: &lt;from-secret-store&gt;
+    model: openai/&lt;served-model&gt;
+</code></pre>
+<p>Perform a day-one context-window check. The investigator may resolve its context window by model name from a lookup table, not from the endpoint. A custom model name can return a wildly wrong window. If the investigator believes it has far more context than it does, it may never compact the conversation, and investigations can fail at length with nothing pointing at the cause.</p>
+<p>Compare the context size logged at startup against what the LLM gateway actually serves. If they match, change nothing. If they do not match, set the override to the true value.</p>
+<p>Measure completion rate, latency under concurrency, and conclusion quality against incidents whose cause is already known. The last metric is the most important.</p>
+<h2>Comparison criteria</h2>
+<ul>
+<li>Storm handling: take a pilot host down and compare alerts raised versus incidents created. Verify that the LLM endpoint was protected.</li>
+<li>Noise reduction: compare incidents per day versus alerts per day for the same period and same hosts.</li>
+<li>Correlation correctness: incidents merging unrelated hosts should be zero.</li>
+<li>Investigation quality: correct root cause on incidents whose cause is already known.</li>
+<li>Remediation reach: how many of the top recurring alerts have a safe automatic fix.</li>
+<li>Monitoring fit: effort to ingest alerts, and whether trigger fields survive as labels.</li>
+<li>Data residency: does alert content leave your environment.</li>
+<li>Operating burden: time spent keeping the system running during the pilot.</li>
+</ul>
+<h2>Reproduction standard</h2>
+<p>Record every step so the environment can be rebuilt:</p>
+<ul>
+<li>Pinned chart versions and repository URL. Do not use floating tags.</li>
+<li>Every non-default value, with a comment explaining why.</li>
+<li>An explicit list of what is not in git, such as tokens and hand-made objects.</li>
+<li>Verification as a command, not a description.</li>
+</ul>
+<h2>Verify before building</h2>
+<p>Confirm these questions before starting. Each one can change the plan.</p>
+<ul>
+<li>What does the monitoring-to-incident media type actually send? Does it deliver host and tenant/environment dimensions as usable fields, or only as prose in a message body?</li>
+<li>Do host groups or tags encode tenant, environment, or site? If yes, the boundary key already exists. If no, it must be created before grouping can use it.</li>
+<li>Is there a test monitoring source, or only production? This decides whether ingestion can be rehearsed before touching anything real.</li>
+<li>Which test cluster will be used, and who owns it? This affects capacity, access, and deployment wiring.</li>
+<li>Does the LLM gateway allow a new consumer, and under what model name? The model name drives the context-window lookup.</li>
+<li>What does the SaaS tier offer for non-Kubernetes targets? This can determine the platform comparison.</li>
+<li>What are the top recurring alerts on the Kubernetes hosts? This defines what healing actually has to do and selects the first automatic remediation candidate.</li>
+</ul>
+<!-- END OF CONTENT -->
+      
+      <!-- Post Navigation -->
+      <!-- EDIT: Update the prev/next links, or remove if not needed -->
+      <nav class="post-nav">
+        <a href="/posts/previous-post-slug/" class="post-nav__link">
+          <span class="post-nav__label">← Previous</span>
+          <span class="post-nav__title">Previous Post Title</span>
+        </a>
+        <a href="/posts/next-post-slug/" class="post-nav__link post-nav__link--next">
+          <span class="post-nav__label">Next →</span>
+          <span class="post-nav__title">Next Post Title</span>
+        </a>
+      </nav>
+      
+    </div>
+  </article>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <nav class="footer__nav">
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/#interests">Interests</a>
+          <a href="/resume/">Resume</a>
+          <a href="/blog/">Posts</a>
+        </nav>
+        <div class="social-links">
+          <a href="mailto:matt@matthewmcgovern.com" title="Email"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="https://www.linkedin.com/in/matthewmcgovern-a844391a2" target="_blank" rel="noopener" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg></a>
+          <a href="https://github.com/matthern" target="_blank" rel="noopener" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg></a>
+          <a href="https://hub.docker.com/u/matthewmjpm" target="_blank" rel="noopener" title="Docker Hub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.185-.186h-2.12a.186.186 0 0 0-.185.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288z"/></svg></a>
+        </div>
+        <p class="footer__copyright">&copy; 2024 Matthew McGovern. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/ascii-bg.js"></script>
+</body>
+</html>
+
+<!--
+================================================================================
+HOW TO CREATE A NEW BLOG POST:
+================================================================================
+
+1. Copy this template to: /posts/your-post-slug/index.html
+   Example: /posts/my-new-linux-tip/index.html
+
+2. Edit the following in the new file:
+   - <title> tag
+   - <meta name="description"> tag
+   - <h1 class="post-header__title">
+   - <p class="post-header__excerpt">
+   - Date in post-header__meta
+   - All content in the <article> section
+   - Previous/Next navigation links
+
+3. Add the post to /assets/data/posts.json:
+   {
+     "id": "your-post-slug",
+     "title": "Your Post Title",
+     "excerpt": "Brief description of your post.",
+     "date": "2024-01-01",
+     "author": "Matthew McGovern",
+     "categories": ["linux", "bash"],
+     "slug": "your-post-slug"
+   }
+
+4. For images:
+   - Save images to: /assets/images/uploads/YEAR/MONTH/
+   - Reference them as: /assets/images/uploads/2024/01/image-name.png
+
+5. For code blocks, use:
+   <pre><code class="language-bash">your code</code></pre>
+   
+   Supported languages: bash, javascript, python, json, yaml, etc.
+
+================================================================================
+-->
+
