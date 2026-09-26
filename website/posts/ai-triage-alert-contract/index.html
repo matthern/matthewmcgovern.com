@@ -93,7 +93,7 @@
 
 <p>The goal is not to make the AI sound smarter. It is to make the triage path predictable. Alerts should enter through consistent identity and policy. Flapping alerts should not trigger repeated investigations. Symptoms should be correlated through declared dependencies, not guessed relationships. Git-managed YAML can be the source of truth for policy and application definitions, while incident history, runtime state, and raw model conversations remain operational data.</p>
 
-<h2>What is deployed versus what is still unfinished</h2>
+<h3>What is deployed versus what is still unfinished</h3>
 
 <p>A staged rollout should make the current state explicit. Some pieces may be live, some may be tested, and some may still be design work. That distinction matters because a triage system is easy to overstate when every improvement is described as if it has already changed behavior.</p>
 
@@ -112,7 +112,7 @@
 
 <p>A useful mental model is this: a firing notification is not proof of delivery, incident creation, or a fresh investigation. It may simply join an existing incident. That distinction matters because many triage systems accidentally treat “alert fired” as “AI must investigate now.” A better design deliberately avoids that shortcut.</p>
 
-<h2>What the evidence should establish</h2>
+<h3>What the evidence should establish</h3>
 
 <p>A useful evidence model does not assume a single root cause for poor AI answers. It separates regressions, prompt behavior, tooling constraints, and evidence gaps.</p>
 
@@ -126,7 +126,7 @@
 
 <p>The repair chain should be recorded with enough detail to reproduce it: canonical source, scoped installer, publication step, wrapper deployment, pipeline result, Helm readiness, image digest, and absence of unwanted constraints. Model and toolset hashes should be unchanged when only the wrapper or prompt is being tested.</p>
 
-<h2>Ownership: who owns what</h2>
+<h3>Ownership: who owns what</h3>
 
 <p>One of the biggest failure modes in homelab AI tooling is unclear ownership. If every repository can change prompts, skills, workflows, and runtime behavior, the system becomes a pile of overlapping assumptions. A better design assigns responsibility deliberately.</p>
 
@@ -141,7 +141,7 @@
 
 <p>Operational documentation should live where the system is operated, not scattered across unreachable notes. The image build guide should live with the image repository. This ownership model is not bureaucratic; it is what makes the system debuggable. When an answer is bad, you need to know whether the problem came from alert identity, prompt behavior, skill content, wrapper constraints, model runtime, or missing evidence.</p>
 
-<h2>Target design: identity and eligibility</h2>
+<h3>Target design: identity and eligibility</h3>
 
 <p>The target design separates three things that are often accidentally merged: stable source/rule/boundary identity, affected subjects, and display titles. That separation is the foundation for better triage.</p>
 
@@ -151,7 +151,7 @@
 
 <p>This is a small idea with a large payoff. If the system knows what an alert is, what it affects, and what it is allowed to do, then it can make better decisions about whether to investigate, join an existing incident, or simply observe.</p>
 
-<h2>Target design: lifecycle</h2>
+<h3>Target design: lifecycle</h3>
 
 <p>Lifecycle is where triage systems either become calm or become noisy. The current correlation uses alert name plus boundary, a 12-hour window, and <code>resolveOn: never</code>, with cron jobs providing closure. Shortening closure alone can increase new incidents and repeated AI calls, so the proposed design is more careful.</p>
 
@@ -159,7 +159,7 @@
 
 <p>That last rule is especially important. If two dispatch paths can fire, the system can create duplicate incidents, duplicate AI calls, and duplicate “investigations” that are really the same evidence being interpreted twice. A calm triage system needs one authoritative path.</p>
 
-<h2>Target design: skills and dependencies</h2>
+<h3>Target design: skills and dependencies</h3>
 
 <p>The universal prompt should remain concise: scope, evidence, and response rules. Skills should describe system locations, label semantics, safe tools, and helpful diagnostic procedures. They should not contain predetermined diagnoses. A skill per alert is not required.</p>
 
@@ -169,7 +169,7 @@
 
 <p>This dependency-aware approach should run alongside the current correlation first. That is the safe way to prove it works: compare the new dependency view against the existing grouping before making it the primary source of truth.</p>
 
-<h2>Completion sequence</h2>
+<h3>Completion sequence</h3>
 
 <ol>
   <li>Review one post-repair run, then historically good GitLab, Kubernetes, datasource, and recurring-incident cases. Record exact versions, evidence, time, tool errors, and tokens. Live reruns are not frozen-input A/B tests.</li>
@@ -182,13 +182,13 @@
 
 <p>The sequence is intentionally conservative. It favors evidence over enthusiasm. It asks the system to prove that it can handle the boring cases before it is allowed to claim that it can handle the interesting ones.</p>
 
-<h2>Verification and unmanaged state</h2>
+<h3>Verification and unmanaged state</h3>
 
 <p>Verification should include unit tests, provenance checks, and execution reports. At rollout, tests should pass, but fixture success is not diagnosis quality. Versions should be recorded for the alerting stack, workflow engine, and Holmes derivative, with the image digest pinned in GitOps. Official sources are the upstream Helm charts and HolmesGPT.</p>
 
 <p>Not in Git: plaintext credentials, private keys, raw model conversations, live incident history, and future ledger/WAL/backups. Encrypted secrets, canonical skills, prompt history, and reviewed experiment records can be in Git.</p>
 
-<h2>Why this matters for a homelab</h2>
+<h3>Why this matters for a homelab</h3>
 
 <p>A homelab AI triage system is not just a toy. It is a control plane for understanding your own infrastructure. If it is noisy, it trains you to ignore it. If it is opaque, it becomes a black box you cannot trust. If it is honest about what it knows, what it does not know, and what evidence it used, it becomes a genuinely useful part of the stack.</p>
 
