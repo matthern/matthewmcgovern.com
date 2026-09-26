@@ -89,7 +89,7 @@
       <!-- EDIT: Add your content here -->
 <div id="auto-excerpt">A note-to-self I send from my phone on Signal becomes a work turn for a dedicated pi coding-agent session in my self-hosted homelab, and the agent's reply comes back over Signal. End-to-end verified with real phone cycles: replies in roughly two to five minutes, agent's full work included.</div>
 <h2>What it does</h2>
-<p>I send a note-to-self on Signal — "check why the deploy pipeline is failing" — and a few minutes later the agent's answer arrives in the same thread. The agent is a dedicated pi coding session on one of my homelab hosts. The pipeline: phone → Signal sync protocol → a signal-cli daemon (a linked device) in a Docker container → WebSocket → a zero-dependency Node bridge (systemd user service) → herdr, the session manager hosting my agent sessions → pi → reply extracted from the session transcript → back over Signal.</p>
+<p>I send a note-to-self on Signal — "check why the deploy pipeline is failing" — and a few minutes later the agent's answer arrives in the same thread. The pipeline: phone → Signal sync protocol → a signal-cli daemon (a linked device) in a Docker container → WebSocket → a zero-dependency Node bridge (systemd user service) → herdr, the session manager hosting my agent sessions → pi → reply extracted from the session transcript → back over Signal.</p>
 <h2>Why I built it</h2>
 <p>The outbound half already existed: since July 2026 any of my agents could message me on Signal. What was missing was inbound — my phone as a control plane. My agent sessions are long-lived and stateful; I wanted to hand a task to the right session from anywhere, without touching a keyboard, and get the result where I already look. The hard part turned out to be Signal's device model, not the agent side.</p>
 <h2>How it works</h2>
@@ -110,13 +110,17 @@
 <p>The bridge waits for the session to be ready before injecting, and the status vocabulary bit me: a fresh session reports <code>idle</code>, but a <em>finished</em> turn reports <code>done</code> — not <code>idle</code>. My first version waited on <code>idle</code> alone, so a completed turn hung until the turn timeout and produced a false "couldn't extract a reply". Both <code>idle</code> and <code>done</code> mean "ready for a new turn". Reply extraction is content-based, not status-based: the last assistant message at or after the injection timestamp, read from the session transcript — which is what makes a short grace window for the transcript's flush race safe.</p>
 <p>Rounding out the design: push over polling (the daemon pushes every envelope; the bridge probes and reconnects with backoff); one serialized queue, one turn in flight; timeouts that message the phone instead of the void; and auto-spawn of a missing session through my standard pi launcher.</p>
 <h2>Results</h2>
-<p>End-to-end verified in September 2026 with three real phone note-to-self cycles: replies delivered back over Signal in ~105s, ~147s and ~305s, each including the agent's full turn. Both bugs above were found and fixed during that pass — neither shows up in unit-level testing; both are artifacts of the real phone → server → daemon path. The bridge itself is a ~350-line, zero-dependency Node script plus a systemd unit.</p>
+<ul>
+<li>Three real phone note-to-self cycles (September 2026): replies delivered back over Signal in ~105s, ~147s and ~305s, each including the agent's full turn.</li>
+<li>Both bugs above found and fixed during that E2E pass — neither shows up in unit-level testing; both are artifacts of the real phone → server → daemon path.</li>
+<li>The bridge itself: a ~350-line, zero-dependency Node script plus a systemd unit.</li>
+</ul>
 <h2>What I learned, and what's next</h2>
 <ul>
 <li>A linked device sees different envelope shapes than a registered primary. You learn that from one dropped message and an "ignored" log line, not from documentation. E2E with a real phone is the test.</li>
 <li>Verify which side is actually broken. "Invalid response" during linking looked like my bug; the daemon log showed the rejection coming from Signal's servers.</li>
-<li>Known limitation, documented: envelopes live in daemon memory only, so notes sent while the container is down are lost. Next: a durable queue, and non-text attachments (images) for a v2 trigger.</li>
 </ul>
+<p><strong>Next:</strong> a durable queue so notes-to-self sent while the daemon is down aren't lost.</p>
 <!-- END OF CONTENT -->
       
       <!-- Post Navigation -->
