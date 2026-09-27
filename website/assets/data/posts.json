@@ -1,5 +1,12 @@
 [
   {
+    "slug": "blog-automation",
+    "title": "An AI Blog Writer That Does Its Research",
+    "date": "September 27, 2026",
+    "author": "Matthew McGovern",
+    "excerpt": "My blog's drafts are now written by a coding agent that reads the actual docs and git history first \u2014 each post ships as a merge request with a local preview, a redaction gate, and a revision loop."
+  },
+  {
     "slug": "signal-pi-bridge",
     "title": "A Signal Bridge for My Coding Agent",
     "date": "September 26, 2026",

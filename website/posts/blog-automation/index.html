@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- EDIT: Change the title -->
+  <title>An AI Blog Writer That Does Its Research - Matthew McGovern</title>
+  <!-- EDIT: Change the description -->
+  <meta name="description" content="My blog's drafts are now written by a coding agent that reads the actual docs and git history first — each post ships as a merge request with a local preview, a redaction gate, and a revision loop.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto:wght@400;500&family=Roboto+Mono&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="/assets/css/style.css">
+  
+  <!-- Syntax Highlighting (for code blocks) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="/assets/images/favicon.png" sizes="32x32">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header__inner">
+        <div class="header__logo">
+          <a href="/">
+            <img src="/assets/images/logo.png" alt="Matthew McGovern">
+          </a>
+          <span class="header__title"><a href="/">MATTHEW MCGOVERN</a></span>
+        </div>
+        
+        <nav class="nav">
+          <button class="nav-toggle" aria-label="Toggle navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 12h18M3 6h18M3 18h18"/>
+            </svg>
+          </button>
+          
+          <ul class="nav__list">
+            <li><a href="/" class="nav__link">Home</a></li>
+            <li><a href="/#about" class="nav__link">About</a></li>
+            <li><a href="/#interests" class="nav__link">Interests</a></li>
+            <li><a href="/resume/" class="nav__link">Resume</a></li>
+            <li><a href="/blog/" class="nav__link nav__link--active">Posts</a></li>
+          </ul>
+          
+          <div class="social-links">
+            <a href="mailto:matt@matthewmcgovern.com" title="Email">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </a>
+            <a href="https://www.linkedin.com/in/matthewmcgovern-a844391a2" target="_blank" rel="noopener" title="LinkedIn">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+            </a>
+            <a href="https://github.com/matthern" target="_blank" rel="noopener" title="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+            </a>
+            <a href="https://hub.docker.com/u/matthewmjpm" target="_blank" rel="noopener" title="Docker Hub">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.185-.186h-2.12a.186.186 0 0 0-.185.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288z"/></svg>
+            </a>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Post Header -->
+  <section class="post-header">
+    <div class="container container--narrow">
+      <!-- EDIT: Change the title -->
+      <h1 class="post-header__title">An AI Blog Writer That Does Its Research</h1>
+      <!-- EDIT: Change the excerpt -->
+      <p class="post-header__excerpt">My blog's drafts are now written by a coding agent that reads the actual docs and git history first — each post ships as a merge request with a local preview, a redaction gate, and a revision loop.</p>
+      <!-- EDIT: Change the date -->
+      <p class="post-header__meta">
+        <span>Matthew McGovern</span> · <span>September 27, 2026</span>
+      </p>
+    </div>
+  </section>
+
+  <!-- Post Content -->
+  <article class="post-content">
+    <div class="container container--narrow">
+      
+      <!-- EDIT: Add your content here -->
+<div id="auto-excerpt">My blog's drafts are now written by a coding agent that reads the actual docs and git history first — each post ships as a merge request with a local preview, a redaction gate, and a revision loop.</div>
+<h2>What it does</h2>
+<p>I keep a technical blog and an internal design doc behind every build. The blog-automation repo closes the loop between them: a Python trigger script picks a topic — a design doc, or a repo I name — and hands it to a coding agent (pi) running a blog-post-writer skill. The agent researches the doc, its repo, and the git history; writes a short first-person post; strips anything identifying my infrastructure; splices it into the site template; and opens a merge request with a local preview. I get a push with the MR and preview links, review the rendered post, reply with <code>@ai [feedback]</code>, and the agent revises in place — merging deploys.</p>
+<h2>Why I built it</h2>
+<p>Version one called a local LLM server directly: one prompt, no tools, no context. The model wrote the whole post from memory of the topic name — generic, and confidently wrong about specifics. It also kept hitting mechanical failures: CLI version drift, drifted template markers, a dead deploy flag. The fix wasn't a better prompt — it was giving the writer the source doc, the code, and the commit history. In late September 2026 I rebuilt the bot around an agent loop with tools; the script became a thin trigger: topic selection, GitLab plumbing, forwarding.</p>
+<h2>How it works</h2>
+<h3>A thin trigger, an agent that does the work</h3>
+<p>Two modes. <strong>Draft</strong> picks a topic — an explicit target (doc path, repo name, or free text) or a random unpublished design doc; a cache file records what's posted, a hold file skips WIP docs. It then starts a non-interactive agent session with the skill: research, write, redact, package. <strong>Revise</strong> scans open auto-blog merge requests for <code>@ai</code> feedback and runs a fresh agent session per MR, rewriting the body in place. The bot's MR replies start with a robot emoji, and that marker is the dedup: a reply newer than the newest feedback note means the MR is skipped — the fifteen-minute schedule is a cheap no-op.</p>
+<pre><code># a bot reply newer than the newest @ai note = already handled (notes newest-first)</code></pre>
+<h3>The agent runs where the material lives</h3>
+<p>Drafts must be written on the machine hosting my checkouts — docs, website repo, the skill. The trigger can run elsewhere (CI container, systemd timer), so when the agent isn't local the script forwards the invocation over SSH as the homelab user — CI jobs run as root, and the key belongs to the regular user. Two environment bugs cost real time here:</p>
+<ul>
+<li>The forwarding SSH key had to load into an ssh-agent <em>before</em> the job script ran; the first attempt loaded it in the post-job hook — too late.</li>
+<li>My Node toolchain is managed by nvm, which only loads in interactive shells; non-interactive sessions had no <code>pi</code> on PATH until I prepended the install's bin directory.</li>
+</ul>
+<h3>Merge requests as the review surface</h3>
+<p>Every post is a merge request, not a deploy. The agent splices the body into the site's HTML template, creates an <code>auto-blog-YYYY-MM-DD-&lt;slug&gt;</code> branch off main, pushes, opens the MR, rsyncs the site to the preview server, verifies the preview returns 200, then sends the push notification. A single-MR policy keeps merges clean: the bot refuses to draft while an auto-blog MR is open, and drafts always base on main — no stacking, no posts-index conflicts. One quirk shaped the wiring: this GitLab version silently drops scheduled-pipeline variables via the API, so the CI rules key off pipeline source instead.</p>
+<h3>A redaction gate, not an afterthought</h3>
+<p>My source docs are full of internal hostnames, IP ranges, and service names. Redaction is part of the skill's contract: before packaging, the body is grepped against a pattern list of identifying strings, and any hit means fix-and-retry. It's also why the bot repo and skill live in a private repository — their prompts and paths are themselves identifying. The local preview is where I check the actual rendering — it caught a first-version bug where template replacement targeted markers that no longer existed, shipping a draft with placeholder text in the browser tab. The splice script now targets the real markers, and the preview makes that failure class visible before merge.</p>
+<h2>How it performs</h2>
+<ul>
+<li>End-to-end verified on the first two posts: a full draft (~850 words) and the revise loop, run twice on one MR — once from a CI container, over SSH, completing a revision, commit, MR reply, and preview sync.</li>
+<li>One agent session — research, write, redaction, package — takes about 7–10 minutes.</li>
+<li>Revise runs on a fifteen-minute GitLab schedule; draft runs on a weekly local timer, currently paused while I sign off drafts by hand.</li>
+<li>The trigger script is ~330 lines; the writing is the skill's prompt plus the agent's tool use.</li>
+</ul>
+<h2>What I learned, and what's next</h2>
+<ul>
+<li>One prompt to a local LLM versus an agent with the actual repo and git history: generic filler versus a post with real commit references. Tools beat prompts.</li>
+<li>Make the review surface a merge request: redaction review, tone feedback, and the deploy gate live in one place, and a human stays the merge button.</li>
+</ul>
+<p><strong>Next:</strong> re-enable the weekly draft timer once drafts are signed off, and point the picker at plans and runbooks — the most identifying sources, redacted harder.</p>
+<!-- END OF CONTENT -->
+      
+      <!-- Post Navigation -->
+      <!-- EDIT: Update the prev/next links, or remove if not needed -->
+      
+      
+    </div>
+  </article>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__inner">
+        <nav class="footer__nav">
+          <a href="/">Home</a>
+          <a href="/#about">About</a>
+          <a href="/#interests">Interests</a>
+          <a href="/resume/">Resume</a>
+          <a href="/blog/">Posts</a>
+        </nav>
+        <div class="social-links">
+          <a href="mailto:matt@matthewmcgovern.com" title="Email"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></a>
+          <a href="https://www.linkedin.com/in/matthewmcgovern-a844391a2" target="_blank" rel="noopener" title="LinkedIn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg></a>
+          <a href="https://github.com/matthern" target="_blank" rel="noopener" title="GitHub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg></a>
+          <a href="https://hub.docker.com/u/matthewmjpm" target="_blank" rel="noopener" title="Docker Hub"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.983 11.078h2.119a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.119a.185.185 0 0 0-.185.185v1.888c0 .102.083.185.185.185m-2.954-5.43h2.118a.186.186 0 0 0 .186-.186V3.574a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.186m0 2.716h2.118a.187.187 0 0 0 .186-.186V6.29a.186.186 0 0 0-.186-.185h-2.118a.185.185 0 0 0-.185.185v1.887c0 .102.082.185.185.186m-2.93 0h2.12a.186.186 0 0 0 .184-.186V6.29a.185.185 0 0 0-.185-.185H8.1a.185.185 0 0 0-.185.185v1.887c0 .102.083.185.185.186m-2.964 0h2.119a.186.186 0 0 0 .185-.186V6.29a.185.185 0 0 0-.185-.185H5.136a.186.186 0 0 0-.186.185v1.887c0 .102.084.185.186.186m5.893 2.715h2.118a.186.186 0 0 0 .186-.185V9.006a.186.186 0 0 0-.186-.186h-2.118a.185.185 0 0 0-.185.185v1.888c0 .102.082.185.185.185m-2.93 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.083.185.185.185m-2.964 0h2.119a.185.185 0 0 0 .185-.185V9.006a.185.185 0 0 0-.185-.186h-2.12a.186.186 0 0 0-.185.186v1.887c0 .102.084.185.186.185m-2.92 0h2.12a.185.185 0 0 0 .184-.185V9.006a.185.185 0 0 0-.184-.186h-2.12a.185.185 0 0 0-.184.185v1.888c0 .102.082.185.185.185M23.763 9.89c-.065-.051-.672-.51-1.954-.51-.338.001-.676.03-1.01.087-.248-1.7-1.653-2.53-1.716-2.566l-.344-.199-.226.327c-.284.438-.49.922-.612 1.43-.23.97-.09 1.882.403 2.661-.595.332-1.55.413-1.744.42H.751a.751.751 0 0 0-.75.748 11.376 11.376 0 0 0 .692 4.062c.545 1.428 1.355 2.48 2.41 3.124 1.18.723 3.1 1.137 5.275 1.137.983.003 1.963-.086 2.93-.266a12.248 12.248 0 0 0 3.823-1.389c.98-.567 1.86-1.288 2.61-2.136 1.252-1.418 1.998-2.997 2.553-4.4h.221c1.372 0 2.215-.549 2.68-1.009.309-.293.55-.65.707-1.046l.098-.288z"/></svg></a>
+        </div>
+        <p class="footer__copyright">&copy; 2024 Matthew McGovern. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+  <script src="/assets/js/main.js"></script>
+  <script src="/assets/js/ascii-bg.js"></script>
+</body>
+</html>
+
+<!--
+================================================================================
+HOW TO CREATE A NEW BLOG POST:
+================================================================================
+
+1. Copy this template to: /posts/your-post-slug/index.html
+   Example: /posts/my-new-linux-tip/index.html
+
+2. Edit the following in the new file:
+   - <title> tag
+   - <meta name="description"> tag
+   - <h1 class="post-header__title">
+   - <p class="post-header__excerpt">
+   - Date in post-header__meta
+   - All content in the <article> section
+   - Previous/Next navigation links
+
+3. Add the post to /assets/data/posts.json:
+   {
+     "id": "your-post-slug",
+     "title": "Your Post Title",
+     "excerpt": "Brief description of your post.",
+     "date": "2024-01-01",
+     "author": "Matthew McGovern",
+     "categories": ["linux", "bash"],
+     "slug": "your-post-slug"
+   }
+
+4. For images:
+   - Save images to: /assets/images/uploads/YEAR/MONTH/
+   - Reference them as: /assets/images/uploads/2024/01/image-name.png
+
+5. For code blocks, use:
+   <pre><code class="language-bash">your code</code></pre>
+   
+   Supported languages: bash, javascript, python, json, yaml, etc.
+
+================================================================================
+-->
+
