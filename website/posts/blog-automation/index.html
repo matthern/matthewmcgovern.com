@@ -88,38 +88,35 @@
       
       <!-- EDIT: Add your content here -->
 <div id="auto-excerpt">The posts on this blog are drafted by a coding agent that reads the actual design docs and git history first. Each draft opens as a merge request with a local preview, and merging the MR deploys the post.</div>
-<p>In this post I will document the blog bot I built to write the posts on this site. I keep a design doc behind every build in a docs repo, and that repo builds itself into a static MkDocs site via CI. The bot picks a topic from those docs, or from a repo I name, and hands it to a coding agent (pi) running a skill I wrote for it. The model doing the writing is a Qwen 27B (Q4_K_M GGUF, 128K context) served by llama.cpp on a local LLM server. The agent researches the doc, the repo it belongs to, and the git history, writes the post, strips anything identifying, and opens a merge request with a local preview. I get a push notification with the MR and preview links, review the rendered post, reply with <code>@ai [feedback]</code> if I want changes, and merging the MR deploys it.</p>
+<p>In this post I will document the blog bot I built to write the posts on this site. I keep a design doc behind every build in a docs repo, which builds itself into a static MkDocs site via CI. The bot picks a topic from those docs, or from a repo I name, and hands it to a coding agent (pi) running a skill I wrote. A local Qwen 27B model (Q4_K_M GGUF, 128K context, served by llama.cpp) does the lifting: it researches the doc, the repo, and the git history, writes the post, strips anything identifying, and opens a merge request with a local preview. I review the rendered post, reply with <code>@ai [feedback]</code> if I want changes, and merging the MR deploys it.</p>
 
 <h2>Why I rebuilt it</h2>
-<p>Version one called a local LLM directly: one prompt, no tools, no context. The model wrote the whole post from memory of the topic name, so it was generic and confidently wrong about specifics. The fix was not a better prompt. It was giving the writer the source doc, the code, and the commit history. In late September 2026 I rebuilt the bot around an agent loop with tools, and the Python script became a thin trigger for topic selection, GitLab plumbing, and forwarding.</p>
+<p>Version one called a local LLM directly: one prompt, no tools, no context. The model wrote the whole post from memory of the topic name, so it was generic and confidently wrong about specifics. The fix was not a better prompt. It was giving the writer the source doc, the code, and the commit history. I rebuilt the bot around an agent loop with tools, and the Python script became a thin trigger for topic selection and GitLab plumbing.</p>
 
-<h2>Draft mode</h2>
-<p>Draft mode picks a topic: an explicit target, a doc path, a repo name, free text, or a random unpublished design doc from the docs repo. A cache file records which docs have already been posted, and a hold file lists work in progress docs the picker must skip. The bot then starts a non-interactive agent session: research the doc and the repo, write the post, redact it, splice it into the site template, and package it.</p>
-
-<h2>Revise mode</h2>
-<p>Revise mode scans the open auto-blog merge requests for <code>@ai</code> notes. For each one it starts a fresh agent session that reads the current post from the branch, rewrites the body in place, commits, replies on the MR, and re-syncs the preview. The bot's MR replies start with a robot emoji, which is the dedupe: a bot reply newer than the newest feedback note means the MR is already handled, so the fifteen minute GitLab schedule stays a cheap no-op. One quirk shaped the wiring: this GitLab version silently drops scheduled pipeline variables via the API, so the CI rules key off the pipeline source instead.</p>
+<h2>Two modes</h2>
+<p>Draft mode picks a topic: an explicit target, a doc path, a repo name, free text, or a random unpublished design doc. A cache file records which docs are already posted, and a hold file lists work in progress docs the picker skips. It then starts a non-interactive agent session: research, write, redact, splice into the template, package.</p>
+<p>Revise mode scans the open auto-blog merge requests for <code>@ai</code> notes and starts a fresh agent session per note: read the post from the branch, rewrite the body in place, commit, reply on the MR, re-sync the preview. Bot MR replies start with a robot emoji, which is the dedupe: a bot reply newer than the newest feedback means the MR is handled, so the fifteen minute GitLab schedule stays a cheap no-op.</p>
 
 <h2>Packaging the post</h2>
-<p>Every post is a merge request, not a deploy, and I stay the merge button. The agent splices the body into the site's HTML template between two content markers, adds the post to the site's post index, and then:</p>
+<p>Every post is a merge request, not a deploy, and I stay the merge button. The agent splices the body into the site template between two content markers, adds the post to the site index, and then:</p>
 <pre><code class="language-bash">git checkout -b auto-blog-2026-09-27-blog-automation
 git add website/posts/blog-automation website/assets/data/posts.json
 git commit -m "Auto-draft blog post: An AI Blog Writer"
 git push -u origin HEAD
 glab mr create --title "Draft: An AI Blog Writer" --label auto-blog</code></pre>
-<p>It then rsyncs the site to a preview server on the homelab and verifies the preview returns 200 before sending the push notification with the MR and preview links. The preview is where I check the actual rendering. It caught a real bug where the template replacement targeted markers that no longer existed, shipping a draft with placeholder text in the browser tab. The splice script now targets the real markers, so that class of failure is visible before merge. Drafts always base on main, and the bot refuses to draft while an auto-blog MR is open, so there is no stacking and no conflict on the post index at merge time.</p>
+<p>It then rsyncs the site to a preview server on the homelab and verifies the preview returns 200 before sending the push notification. The preview is where I check the rendering, and it caught a real bug where the template replacement targeted markers that no longer existed, shipping a draft with placeholder text in the browser tab. Drafts always base on main, and the bot refuses to draft while an auto-blog MR is open, so there is no conflict on the post index at merge.</p>
 
-<h2>The agent runs where the material lives</h2>
-<p>Drafts have to be written on the machine that hosts my checkouts: the docs, the website repo, the skill, and the preview target. The trigger can run elsewhere, like a CI container, so when the agent is not local the script forwards the invocation over SSH as my regular user, because CI jobs run as root. Two environment bugs cost real time: the forwarding SSH key had to load into an ssh-agent before the job script ran, and nvm, which manages my Node toolchain, only loads in interactive shells. Non-interactive sessions had no <code>pi</code> on PATH until I prepended the install's bin directory.</p>
+<h2>Where the agent runs</h2>
+<p>Drafts are written on the machine that hosts my checkouts: the docs, the website repo, the skill, and the preview target. When the trigger runs in a CI container, the script forwards the invocation over SSH as my regular user, because CI jobs run as root. Two environment bugs cost real time: the forwarding key had to load into an ssh-agent before the job script ran, and nvm only loads in interactive shells, so non-interactive sessions had no <code>pi</code> on PATH until I prepended the install's bin directory.</p>
 
 <h2>Redaction</h2>
 <p>My source docs are full of internal hostnames, IP ranges, and service names. Before packaging, the body is grepped against a pattern list of identifying strings, and any hit means fix and retry. That is also why the bot repo and the skill live in a private repository: their prompts and paths are identifying in themselves.</p>
 
 <h2>How it performs</h2>
 <ul>
-<li>End to end verified on the first two posts: a full draft of about 850 words, and the revise loop run twice on one MR, once from a CI container over SSH.</li>
-<li>One agent session, research, write, redaction, package, takes about 7 to 10 minutes.</li>
+<li>One agent session, research through package, takes about 7 to 10 minutes, and all of the writing is the Qwen 27B model following the skill's prompt.</li>
 <li>Revise runs on a fifteen minute GitLab schedule. Draft runs on a weekly local timer, currently paused while I sign off drafts by hand.</li>
-<li>The trigger script is about 330 lines. The writing is the skill's prompt plus the agent's tool use.</li>
+<li>The trigger script is about 330 lines of Python.</li>
 </ul>
 
 <h2>Resources</h2>
