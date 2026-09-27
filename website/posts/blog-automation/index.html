@@ -88,16 +88,16 @@
       
       <!-- EDIT: Add your content here -->
 <div id="auto-excerpt">The posts on this blog are drafted by a coding agent that reads the actual design docs and git history first. Each draft opens as a merge request with a local preview, and merging the MR deploys the post.</div>
-<p>In this post I will document the blog bot I built to write the posts on this site. I keep a design doc behind every build in a docs repo, and that repo builds itself into a static MkDocs site via CI. The bot picks a topic from those docs, or from a repo I name, and hands it to a coding agent (pi) running a skill I wrote for it. The agent researches the doc, the repo it belongs to, and the git history, writes the post, strips anything identifying, and opens a merge request with a local preview. I get a push notification with the MR and preview links, review the rendered post, reply with <code>@ai [feedback]</code> if I want changes, and merging the MR deploys it.</p>
+<p>In this post I will document the blog bot I built to write the posts on this site. I keep a design doc behind every build in a docs repo, and that repo builds itself into a static MkDocs site via CI. The bot picks a topic from those docs, or from a repo I name, and hands it to a coding agent (pi) running a skill I wrote for it. The model doing the writing is a Qwen 27B (Q4_K_M GGUF, 128K context) served by llama.cpp on a local LLM server. The agent researches the doc, the repo it belongs to, and the git history, writes the post, strips anything identifying, and opens a merge request with a local preview. I get a push notification with the MR and preview links, review the rendered post, reply with <code>@ai [feedback]</code> if I want changes, and merging the MR deploys it.</p>
 
 <h2>Why I rebuilt it</h2>
-<p>Version one of the bot called a local LLM server directly: one prompt, no tools, no context. The model wrote the whole post from memory of the topic name, so it was generic and confidently wrong about specifics. It also kept hitting mechanical failures: a CLI version drift, template markers that had drifted out from under it, and a dead deploy flag. The fix was not a better prompt. It was giving the writer the source doc, the code, and the commit history. In late September 2026 I rebuilt the bot around an agent loop with tools, and the Python script became a thin trigger that does topic selection, GitLab plumbing, and forwarding.</p>
+<p>Version one called a local LLM directly: one prompt, no tools, no context. The model wrote the whole post from memory of the topic name, so it was generic and confidently wrong about specifics. The fix was not a better prompt. It was giving the writer the source doc, the code, and the commit history. In late September 2026 I rebuilt the bot around an agent loop with tools, and the Python script became a thin trigger for topic selection, GitLab plumbing, and forwarding.</p>
 
 <h2>Draft mode</h2>
-<p>Draft mode picks a topic. It can be an explicit target, a doc path, a repo name, or free text, or it picks a random unpublished design doc from the docs repo. A cache file records which docs have already been posted, and a hold file lists work in progress docs the picker must skip. The bot then starts a non-interactive agent session with the skill: research the doc and the repo, write the post, redact it, splice it into the site template, and package it.</p>
+<p>Draft mode picks a topic: an explicit target, a doc path, a repo name, free text, or a random unpublished design doc from the docs repo. A cache file records which docs have already been posted, and a hold file lists work in progress docs the picker must skip. The bot then starts a non-interactive agent session: research the doc and the repo, write the post, redact it, splice it into the site template, and package it.</p>
 
 <h2>Revise mode</h2>
-<p>Revise mode scans the open auto-blog merge requests for <code>@ai</code> notes. For each one it starts a fresh agent session that reads the current post from the branch, rewrites the body in place, commits, replies on the MR, and re-syncs the preview. The bot's MR replies start with a robot emoji, and that marker is the dedupe. A bot reply newer than the newest feedback note means the MR is already handled and gets skipped, which keeps the fifteen minute GitLab schedule a cheap no-op. One quirk shaped the wiring here: this GitLab version silently drops scheduled pipeline variables via the API, so the CI rules key off the pipeline source instead.</p>
+<p>Revise mode scans the open auto-blog merge requests for <code>@ai</code> notes. For each one it starts a fresh agent session that reads the current post from the branch, rewrites the body in place, commits, replies on the MR, and re-syncs the preview. The bot's MR replies start with a robot emoji, which is the dedupe: a bot reply newer than the newest feedback note means the MR is already handled, so the fifteen minute GitLab schedule stays a cheap no-op. One quirk shaped the wiring: this GitLab version silently drops scheduled pipeline variables via the API, so the CI rules key off the pipeline source instead.</p>
 
 <h2>Packaging the post</h2>
 <p>Every post is a merge request, not a deploy, and I stay the merge button. The agent splices the body into the site's HTML template between two content markers, adds the post to the site's post index, and then:</p>
@@ -106,29 +106,21 @@ git add website/posts/blog-automation website/assets/data/posts.json
 git commit -m "Auto-draft blog post: An AI Blog Writer"
 git push -u origin HEAD
 glab mr create --title "Draft: An AI Blog Writer" --label auto-blog</code></pre>
-<p>It then rsyncs the site to a preview server on the homelab, verifies the preview returns 200, and sends the push notification with the MR and preview links. Drafts always base on main, and the bot refuses to draft while an auto-blog MR is open, so there is no stacking and no conflict on the post index at merge time.</p>
-
-<h2>The preview page</h2>
-<p>The preview is a full copy of the site, kept in sync by rsync and served locally on the homelab, so it renders exactly like the real site. That is where I check the actual rendering. It caught a first version bug where the template replacement targeted markers that no longer existed in the template, shipping a draft with placeholder text in the browser tab. The splice script now targets the real markers, and the preview makes that class of failure visible before merge.</p>
+<p>It then rsyncs the site to a preview server on the homelab and verifies the preview returns 200 before sending the push notification with the MR and preview links. The preview is where I check the actual rendering. It caught a real bug where the template replacement targeted markers that no longer existed, shipping a draft with placeholder text in the browser tab. The splice script now targets the real markers, so that class of failure is visible before merge. Drafts always base on main, and the bot refuses to draft while an auto-blog MR is open, so there is no stacking and no conflict on the post index at merge time.</p>
 
 <h2>The agent runs where the material lives</h2>
-<p>Drafts have to be written on the machine that hosts my checkouts: the docs, the website repo, the skill, and the preview target. The trigger can run elsewhere, like a CI container or a local systemd timer, so when the agent is not local the script forwards the invocation over SSH. CI jobs run as root, and the SSH key belongs to the regular user, so the bot forwards as the regular user. Two environment bugs cost real time here:</p>
-<ul>
-<li>The forwarding SSH key had to load into an ssh-agent before the job script ran. My first attempt loaded it in the post job hook, which was too late.</li>
-<li>My Node toolchain is managed by nvm, which only loads in interactive shells. Non-interactive sessions had no <code>pi</code> on PATH until I prepended the install's bin directory.</li>
-</ul>
+<p>Drafts have to be written on the machine that hosts my checkouts: the docs, the website repo, the skill, and the preview target. The trigger can run elsewhere, like a CI container, so when the agent is not local the script forwards the invocation over SSH as my regular user, because CI jobs run as root. Two environment bugs cost real time: the forwarding SSH key had to load into an ssh-agent before the job script ran, and nvm, which manages my Node toolchain, only loads in interactive shells. Non-interactive sessions had no <code>pi</code> on PATH until I prepended the install's bin directory.</p>
 
 <h2>Redaction</h2>
-<p>My source docs are full of internal hostnames, IP ranges, and service names. Redaction is part of the skill's contract: before packaging, the body is grepped against a pattern list of identifying strings, and any hit means fix and retry. It is also why the bot repo and the skill live in a private repository, because their prompts and paths are identifying in themselves.</p>
+<p>My source docs are full of internal hostnames, IP ranges, and service names. Before packaging, the body is grepped against a pattern list of identifying strings, and any hit means fix and retry. That is also why the bot repo and the skill live in a private repository: their prompts and paths are identifying in themselves.</p>
 
 <h2>How it performs</h2>
 <ul>
-<li>End to end verified on the first two posts: a full draft of about 850 words, and the revise loop run twice on one MR, once from a CI container over SSH, completing a revision, commit, MR reply, and preview sync.</li>
+<li>End to end verified on the first two posts: a full draft of about 850 words, and the revise loop run twice on one MR, once from a CI container over SSH.</li>
 <li>One agent session, research, write, redaction, package, takes about 7 to 10 minutes.</li>
 <li>Revise runs on a fifteen minute GitLab schedule. Draft runs on a weekly local timer, currently paused while I sign off drafts by hand.</li>
 <li>The trigger script is about 330 lines. The writing is the skill's prompt plus the agent's tool use.</li>
 </ul>
-<p>Once the drafts are signed off by hand the weekly timer comes back on, and the picker will be pointed at plans and runbooks as well, which are the most identifying sources, so they get redacted harder.</p>
 
 <h2>Resources</h2>
 <ul>
