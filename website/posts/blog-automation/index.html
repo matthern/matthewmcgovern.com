@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- EDIT: Change the title -->
-  <title>A Signal Bridge for My Coding Agent - Matthew McGovern</title>
+  <title>An AI Blog Writer That Does Its Research - Matthew McGovern</title>
   <!-- EDIT: Change the description -->
-  <meta name="description" content="A note-to-self on Signal becomes a work turn for a dedicated coding-agent session in my homelab — and the agent's reply comes back over Signal.">
+  <meta name="description" content="The posts on this blog are drafted by a coding agent that reads the actual design docs and git history first. Each draft opens as a merge request with a local preview, and merging the MR deploys the post.">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -72,12 +72,12 @@
   <section class="post-header">
     <div class="container container--narrow">
       <!-- EDIT: Change the title -->
-      <h1 class="post-header__title">A Signal Bridge for My Coding Agent</h1>
+      <h1 class="post-header__title">An AI Blog Writer That Does Its Research</h1>
       <!-- EDIT: Change the excerpt -->
-      <p class="post-header__excerpt">A note-to-self on Signal becomes a work turn for a dedicated coding-agent session in my homelab — and the agent's reply comes back over Signal.</p>
+      <p class="post-header__excerpt">The posts on this blog are drafted by a coding agent that reads the actual design docs and git history first. Each draft opens as a merge request with a local preview, and merging the MR deploys the post.</p>
       <!-- EDIT: Change the date -->
       <p class="post-header__meta">
-        <span>Matthew McGovern</span> · <span>September 26, 2026</span>
+        <span>Matthew McGovern</span> · <span>September 27, 2026</span>
       </p>
     </div>
   </section>
@@ -87,55 +87,51 @@
     <div class="container container--narrow">
       
       <!-- EDIT: Add your content here -->
-<div id="auto-excerpt">A note-to-self I send from my phone on Signal becomes a work turn for a dedicated pi coding-agent session in my self-hosted homelab, and the agent's reply comes back over Signal. End-to-end verified with real phone cycles: replies in roughly two to five minutes, agent's full work included.</div>
-<h2>What it does</h2>
-<p>I send a note-to-self on Signal — "check why the deploy pipeline is failing" — and a few minutes later the agent's answer arrives in the same thread. The pipeline: phone → Signal sync protocol → a signal-cli daemon (a linked device) in a Docker container → WebSocket → a zero-dependency Node bridge (systemd user service) → herdr, the session manager hosting my agent sessions → pi → reply extracted from the session transcript → back over Signal.</p>
-<h2>Why I built it</h2>
-<p>The outbound half already existed: since July 2026 any of my agents could message me on Signal. What was missing was inbound — my phone as a control plane. My agent sessions are long-lived and stateful; I wanted to hand a task to the right session from anywhere, without touching a keyboard, and get the result where I already look. The hard part turned out to be Signal's device model, not the agent side.</p>
-<h2>How it works</h2>
-<h3>The daemon is a linked device, not a second account</h3>
-<p>The homelab host is a linked (secondary) device of my phone's account. That one fact explains most of the design: my notes-to-self don't arrive as ordinary incoming messages — they arrive as <em>sync messages</em> the primary phone pushes to its linked devices. And since there is no second account or number, nothing external can point at the box: the bridge triggers only on notes-to-self from the primary device (my number, device 1, non-empty body) and logs-and-drops everything else.</p>
-<h3>Getting the device linked: two upstream bugs</h3>
-<p>Linking the host as a second device was a debugging saga, and it wasn't my setup — it was two independent upstream signal-cli bugs, each with evidence:</p>
+<div id="auto-excerpt">The posts on this blog are drafted by a coding agent that reads the actual design docs and git history first. Each draft opens as a merge request with a local preview, and merging the MR deploys the post.</div>
+<p>In this post I will document the blog bot I built to write the posts on this site. I keep a design doc behind every build in a docs repo, which builds itself into a static MkDocs site via CI. The bot picks a topic from those docs, or from a repo I name, and hands it to a coding agent (pi) running a skill I wrote. A local Qwen 27B model (Q4_K_M GGUF, 128K context, served by llama.cpp) does the lifting: it researches the doc, the repo, and the git history, writes the post, strips anything identifying, and opens a merge request with a local preview. I review the rendered post, reply with <code>@ai [feedback]</code> if I want changes, and merging the MR deploys it.</p>
+
+<h2>Why I rebuilt it</h2>
+<p>Version one called a local LLM directly: one prompt, no tools, no context. The model wrote the whole post from memory of the topic name, so it was generic and confidently wrong about specifics. The fix was not a better prompt. It was giving the writer the source doc, the code, and the commit history. I rebuilt the bot around an agent loop with tools, and the script became a thin trigger for topic selection and GitLab plumbing.</p>
+
+<h2>Two modes</h2>
+<p>Draft mode picks a topic: an explicit target, a doc path, a repo name, free text, or a random unpublished design doc. A cache file records which docs are already posted, and a hold file lists work in progress docs the picker skips. It then starts a non-interactive agent session: research, write, redact, splice into the template, package.</p>
+<p>Revise mode scans the open auto-blog merge requests for <code>@ai</code> notes and starts a fresh agent session per note: read the post from the branch, rewrite the body in place, commit, reply on the MR, re-sync the preview. Bot MR replies start with a robot emoji, which is the dedupe: a bot reply newer than the newest feedback means the MR is handled, so the fifteen minute GitLab schedule stays a cheap no-op.</p>
+
+<h2>Packaging the post</h2>
+<p>Every post is a merge request, not a deploy, and I stay the merge button. The agent splices the body into the site template between two content markers, adds the post to the site index, and then:</p>
+<pre><code class="language-bash">git checkout -b auto-blog-2026-09-27-blog-automation
+git add website/posts/blog-automation website/assets/data/posts.json
+git commit -m "Auto-draft blog post: An AI Blog Writer"
+git push -u origin HEAD
+glab mr create --title "Draft: An AI Blog Writer" --label auto-blog</code></pre>
+<p>It then rsyncs the site to a preview server on the homelab and verifies the preview returns 200 before sending the push notification. The preview is where I check the rendering, and it caught a real bug where the template replacement targeted markers that no longer existed, shipping a draft with placeholder text in the browser tab. Drafts always base on main, and the bot refuses to draft while an auto-blog MR is open, so there is no conflict on the post index at merge.</p>
+
+<h2>Where the agent runs</h2>
+<p>Drafts are written on the machine that hosts my checkouts: the docs, the website repo, the skill, and the preview target. When the trigger runs in a CI container, the script forwards the invocation over SSH as my regular user, because CI jobs run as root. Two environment bugs cost real time: the forwarding key had to load into an ssh-agent before the job script ran, and nvm only loads in interactive shells, so non-interactive sessions had no <code>pi</code> on PATH until I prepended the install's bin directory.</p>
+
+<h2>Redaction</h2>
+<p>My source docs are full of internal hostnames, IP ranges, and service names. Before packaging, the body is grepped against a pattern list of identifying strings, and any hit means fix and retry. That is also why the bot repo and the skill live in a private repository: their prompts and paths are identifying in themselves.</p>
+
+<h2>How it runs</h2>
 <ul>
-<li>The 0.14.5-era link socket died at ~60 seconds: a Signal server-side infrastructure change in June 2026 (AsamK/signal-cli#2074). Fixed by moving to an image bundling signal-cli 0.14.7 — verified the socket survives past the 60s mark where it previously died.</li>
-<li>With the socket fixed, every scan still failed with "invalid response": the link URI was missing <code>&amp;capabilities=nopni</code> (AsamK/signal-cli#2123), required for linked devices with no phone number of their own — exactly this case. The upstream fix existed as a commit but not in any released image, so my QR script fetches the raw URI and appends the parameter client-side.</li>
+<li>All of the writing is the Qwen 27B model following the skill's prompt.</li>
+<li>Revise runs on a fifteen minute GitLab schedule. Draft runs on a weekly local timer, currently paused while I sign off drafts by hand.</li>
 </ul>
-<p>Real phone scan in September 2026: linked, verified both directions.</p>
-<h3>The envelope contract (the hard-won part)</h3>
-<p>Three shapes arrive on the WebSocket, and getting them wrong drops messages <em>silently</em>. A regular incoming message carries text under <code>dataMessage</code>; a note-to-self from the primary phone carries <strong>no</strong> <code>dataMessage</code> at all — it arrives as <code>syncMessage.sentMessage</code>; and text past the inline limit arrives as a <code>text/x-signal-plain</code> attachment, fetched by ID and appended. The first E2E bug: my bridge only looked at <code>dataMessage</code>, so every phone note was dropped as "no text — ignored"; the ignore-log line was the only trace. The fix is the unwrap:</p>
-<pre><code>const inner = env.dataMessage ?? env.syncMessage?.sentMessage;</code></pre>
-<p>Deduplication has a twist: modern signal-cli no longer exposes a GUID on envelopes, so the key is <code>source + timestamp + SHA-1(body)</code>, persisted in a bounded state file — network replays and restarts can't double-drive the agent, and losing the file costs at worst one duplicate.</p>
-<h3>Agent status semantics (the second E2E bug)</h3>
-<p>The bridge waits for the session to be ready before injecting, and the status vocabulary bit me: a fresh session reports <code>idle</code>, but a <em>finished</em> turn reports <code>done</code> — not <code>idle</code>. My first version waited on <code>idle</code> alone, so a completed turn hung until the turn timeout and produced a false "couldn't extract a reply". Both <code>idle</code> and <code>done</code> mean "ready for a new turn". Reply extraction is content-based, not status-based: the last assistant message at or after the injection timestamp, read from the session transcript — which is what makes a short grace window for the transcript's flush race safe.</p>
-<p>Rounding out the design: push over polling (the daemon pushes every envelope; the bridge probes and reconnects with backoff); one serialized queue, one turn in flight; timeouts that message the phone instead of the void; and auto-spawn of a missing session through my standard pi launcher.</p>
-<h2>How it performs</h2>
+
+<h2>Resources</h2>
 <ul>
-<li>Three real phone note-to-self cycles (September 2026): replies delivered back over Signal in ~105s, ~147s and ~305s, each including the agent's full turn.</li>
-<li>Both bugs above found and fixed during that E2E pass — neither shows up in unit-level testing; both are artifacts of the real phone → server → daemon path.</li>
-<li>The bridge itself: a ~350-line, zero-dependency Node script plus a systemd unit.</li>
+<li><a href="https://github.com/earendil-works/pi" target="_blank">pi, the coding agent the bot runs</a></li>
+<li><a href="https://www.mkdocs.org/" target="_blank">MkDocs, which builds the docs repo into a static site</a></li>
 </ul>
-<h2>What I learned, and what's next</h2>
-<ul>
-<li>A linked device sees different envelope shapes than a registered primary. You learn that from one dropped message and an "ignored" log line, not from documentation. E2E with a real phone is the test.</li>
-<li>Verify which side is actually broken. "Invalid response" during linking looked like my bug; the daemon log showed the rejection coming from Signal's servers.</li>
-</ul>
-<p><strong>Next:</strong> a durable queue so notes-to-self sent while the daemon is down aren't lost.</p>
 <!-- END OF CONTENT -->
       
       <!-- Post Navigation -->
-      <!-- EDIT: Update the prev/next links, or remove if not needed -->
       <nav class="post-nav">
-        <a href="/posts/setup-jump-host-with-vpn-client/" class="post-nav__link">
+        <a href="/posts/signal-pi-bridge/" class="post-nav__link">
           <span class="post-nav__label">← Previous</span>
-          <span class="post-nav__title">Setup Jump Host with VPN Client</span>
-        </a>
-        <a href="/posts/blog-automation/" class="post-nav__link post-nav__link--next">
-          <span class="post-nav__label">Next →</span>
-          <span class="post-nav__title">An AI Blog Writer That Does Its Research</span>
+          <span class="post-nav__title">A Signal Bridge for My Coding Agent</span>
         </a>
       </nav>
-      
     </div>
   </article>
 
