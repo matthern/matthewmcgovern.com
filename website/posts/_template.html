@@ -147,6 +147,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
   <script src="/assets/js/main.js"></script>
   <script src="/assets/js/ascii-bg.js"></script>
+
+  <!-- Mermaid diagrams (optional - only loads work if a post has <pre class="mermaid"> blocks) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.15.0/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
 </body>
 </html>
 
@@ -184,8 +190,19 @@ HOW TO CREATE A NEW BLOG POST:
 
 5. For code blocks, use:
    <pre><code class="language-bash">your code</code></pre>
-   
+
    Supported languages: bash, javascript, python, json, yaml, etc.
+
+6. For diagrams, use a mermaid block (renders client-side, no build step):
+   <pre class="mermaid">
+   flowchart LR
+       A[Start] --> B[End]
+   </pre>
+
+   Use "pre class=mermaid", not "div" - avoids HTML entity/whitespace issues
+   with diagram syntax. Quote any node label containing punctuation, e.g.
+   A["Some (label)"] not A[Some (label)]. Supports flowchart, sequenceDiagram,
+   classDiagram, stateDiagram, erDiagram, gantt, and more - see mermaid.js.org.
 
 ================================================================================
 -->
